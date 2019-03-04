@@ -1,7 +1,6 @@
 // https://leetcode.com/problems/two-sum/
-package main
 
-import "fmt"
+package main
 
 func twoSum(nums []int, target int) []int {
 	bitmap := make(map[int]int)
@@ -18,3 +17,4 @@ func twoSum(nums []int, target int) []int {
 	return []int{}
 }
 
+func main() {}
