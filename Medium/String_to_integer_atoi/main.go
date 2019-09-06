@@ -88,11 +88,13 @@ func myAtoi(str string) int {
 	str = takeWhile(func(r rune) bool { return r >= 48 && r <= 57 }, str)
 
 	numberList := mapNumber(str)
+
+	intArr := maxIntArr
 	if sign < 0 {
-		return sign * checkAndConvert(numberList, minIntArr)
+		intArr = minIntArr
 	}
 
-	return sign * checkAndConvert(numberList, maxIntArr)
+	return sign * checkAndConvert(numberList, intArr)
 }
 
 func main() {}
