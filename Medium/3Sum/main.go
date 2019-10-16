@@ -25,11 +25,11 @@ func in(arr []int, nested [][]int) (present bool) {
 	return false
 }
 
-func sum(x []int) (sum int) {
+func sum(x []int) (sumVal int) {
 	for _, v := range x {
-		sum += v
+		sumVal += v
 	}
-	return sum
+	return sumVal
 }
 
 func threeSum(nums []int) (threeSums [][]int) {
