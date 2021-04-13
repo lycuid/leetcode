@@ -22,10 +22,7 @@ func rotateRight(head *ListNode, k int) *ListNode {
 	k %= length
 
 	newhead := head
-	for l := 0; l < length; l++ {
-		if l >= length-k-1 {
-			continue
-		}
+	for l := 0; l < length-k-1; l++ {
 		newhead = newhead.Next
 	}
 	tmp := newhead
