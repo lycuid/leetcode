@@ -7,34 +7,27 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-func increasingBST(root *TreeNode) *TreeNode {
-	var old_root, r *TreeNode
+func solve(root *TreeNode, k *int) *TreeNode {
 	if root == nil {
-		goto EXIT
+		return nil
 	}
-	root.Right = increasingBST(root.Right)
-	if root.Left == nil {
-		goto EXIT
+	left := solve(root.Left, k)
+	if left != nil {
+		return left
 	}
-	old_root = root
-	root = increasingBST(root.Left)
-	old_root.Left = nil
-	for r = root; r.Right != nil; r = r.Right {
+	(*k)--
+	if (*k) == 0 {
+		return root
 	}
-	r.Right = old_root
-EXIT:
-	return root
+	return solve(root.Right, k)
 }
 
 func kthSmallest(root *TreeNode, k int) int {
-	new_root := increasingBST(root)
-	for ; k > 1 && new_root != nil; k-- {
-		new_root = new_root.Right
+	new_root := solve(root, &k)
+	if new_root != nil {
+		return new_root.Val
 	}
-	if new_root == nil {
-		return 0
-	}
-	return new_root.Val
+	return 0
 }
 
 func main() {}
