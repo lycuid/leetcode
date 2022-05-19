@@ -1,53 +1,47 @@
 // https://leetcode.com/problems/valid-parentheses/
-
 package main
 
-// Stack stack implementation
 type Stack struct {
-	stack []rune
+	inner  []rune
+	cursor int
 }
 
-func (s Stack) get() rune {
-	return s.stack[len(s.stack)-1]
+func (this *Stack) Push(item rune) {
+	this.inner[this.cursor] = item
+	this.cursor++
 }
 
-func (s *Stack) add(i rune) {
-	s.stack = append(s.stack, i)
+func (this *Stack) Pop() (item rune) {
+	this.cursor--
+	item = this.inner[this.cursor]
+	return item
 }
 
-func (s *Stack) pop() {
-	s.stack = s.stack[:len(s.stack)-1]
+func (this *Stack) Empty() bool {
+	return this.cursor == 0
 }
 
-func (s Stack) length() int {
-	return len(s.stack)
-}
-
-func isValid(s string) bool {
-	openers := map[rune]bool{40: true, 91: true, 123: true}
-	closingMaps := map[rune]rune{
-		41:  40,
-		93:  91,
-		125: 123,
-	}
-
-	stack := Stack{[]rune{}}
-
-	for _, i := range s {
-		if _, ok := openers[i]; ok {
-			stack.add(i)
-			continue
+func isValid(str string) bool {
+	stack := Stack{make([]rune, len(str)), 0}
+	for _, ch := range str {
+		switch ch {
+		case 40, 91, 123:
+			stack.Push(ch)
+		case 41:
+			if stack.Empty() || stack.Pop() != 40 {
+				return false
+			}
+		case 93:
+			if stack.Empty() || stack.Pop() != 91 {
+				return false
+			}
+		case 125:
+			if stack.Empty() || stack.Pop() != 123 {
+				return false
+			}
 		}
-
-		if stack.length() > 0 && stack.get() == closingMaps[i] {
-			stack.pop()
-			continue
-		}
-
-		return false
 	}
-
-	return stack.length() == 0
+	return stack.Empty()
 }
 
 func main() {}
