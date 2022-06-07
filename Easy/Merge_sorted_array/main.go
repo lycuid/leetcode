@@ -1,30 +1,22 @@
 // https://leetcode.com/problems/merge-sorted-array/
-
 package main
 
-func merge(nums1 []int, m int, nums2 []int, n int)  {
-  i, j, k := m - 1, n - 1, m + n - 1
-  for i >= 0 && j >= 0 {
-    if nums1[i] > nums2[j] {
-      nums1[k] = nums1[i]
-      i--
-    } else {
-      nums1[k] = nums2[j]
-      j--
-    }
-    k--
-  }
-  for i >= 0 && k >= 0 {
-    nums1[k] = nums1[i]
-    i--
-    k--
-  }
-  for j >= 0 && k >= 0 {
-    nums1[k] = nums2[j]
-    j--
-    k--
-  }
+func merge(nums1 []int, m int, nums2 []int, n int) {
+	for m > 0 && n > 0 {
+		if nums1[m-1] > nums2[n-1] {
+			nums1[m+n-1] = nums1[m-1]
+			m--
+		} else {
+			nums1[m+n-1] = nums2[n-1]
+			n--
+		}
+	}
+	for ; m > 0; m-- {
+		nums1[m+n-1] = nums1[m-1]
+	}
+	for ; n > 0; n-- {
+		nums1[m+n-1] = nums2[n-1]
+	}
 }
 
-func main() { }
-
+func main() {}
