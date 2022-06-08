@@ -1,34 +1,18 @@
 // https://leetcode.com/problems/longest-substring-without-repeating-characters/
-
 package main
 
-func lengthOfLongestSubstring(s string) int {
-	length := 0
-	result := 0
-	visited := make(map[byte]int)
-
-	for i := 0; i < len(s); i++ {
-		b := s[i]
-		if index, ok := visited[b]; ok {
-			if length > result {
-				result = length
-			}
-			length = 0
-			visited = map[byte]int{}
-			i = index
-
-			continue
+func lengthOfLongestSubstring(s string) (ret int) {
+	var cache [129]bool
+	for i, j := 0, 0; i < len(s); i++ {
+		for ; cache[s[i]] && j < i; j++ {
+			cache[s[j]] = false
 		}
-
-		visited[b] = i
-		length++
+		if i-j+1 > ret {
+			ret = i - j + 1
+		}
+		cache[s[i]] = true
 	}
-
-	if length > result {
-		result = length
-	}
-	return result
+	return ret
 }
 
 func main() {}
-
