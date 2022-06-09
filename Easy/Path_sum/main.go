@@ -14,11 +14,7 @@ func hasPathSum(r *TreeNode, t int) bool {
 	if r.Val == t && r.Left == nil && r.Right == nil {
 		return true
 	}
-
-	left := r.Left != nil && hasPathSum(r.Left, t-r.Val)
-	right := r.Right != nil && hasPathSum(r.Right, t-r.Val)
-
-	return left || right
+	return hasPathSum(r.Left, t-r.Val) || hasPathSum(r.Right, t-r.Val)
 }
 
 func main() {}
