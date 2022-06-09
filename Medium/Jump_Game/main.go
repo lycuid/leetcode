@@ -1,24 +1,14 @@
 // https://leetcode.com/problems/jump-game/
 package main
 
-func maxint(x, y int) int {
-	if x > y {
-		return x
-	}
-	return y
-}
-
 func canJump(nums []int) bool {
-	l := len(nums)
-	max := 0
-	for i := 0; i < l; i++ {
-		if i > max {
-			return false
+	target := len(nums) - 1
+	for i := target - 1; i >= 0; i-- {
+		if nums[i] >= target-i {
+			target = i
 		}
-		max = maxint(max, nums[i]+i)
 	}
-
-	return true
+	return target == 0
 }
 
 func main() {}
