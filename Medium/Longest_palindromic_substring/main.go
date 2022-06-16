@@ -1,34 +1,20 @@
 // https://leetcode.com/problems/longest-palindromic-substring/
-
 package main
 
-func isPalindrome(s string) bool {
-	l := len(s)
-	for i := 0; i < (l / 2); i++ {
-		if s[i] != s[l-i-1] {
-			return false
-		}
-	}
-	return true
-}
-
 func longestPalindrome(s string) string {
-	if len(s) <= 1 {
-		return s
-	}
-
-	palindrome := ""
-
-	for i := 0; i < len(s)-len(palindrome); i++ {
-		l := len(palindrome)
-		for j := i + l; j < len(s); j++ {
-			substr := s[i : j+1]
-			if s[i] == s[j] && isPalindrome(substr) {
-				palindrome = substr
+	from, to := 0, 0
+	for i := 1; i < len(s); i++ {
+		for _, p := range [][]int{{i, i}, {i - 1, i}} {
+			l, r := p[0], p[1]
+			for ; l >= 0 && r < len(s) && s[l] == s[r]; l, r = l-1, r+1 {
+			}
+			l, r = l+1, r-1
+			if r-l > to-from {
+				from, to = l, r
 			}
 		}
 	}
-	return palindrome
+	return s[from:to+1]
 }
 
 func main() {}
