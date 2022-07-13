@@ -9,7 +9,7 @@ type TreeNode struct {
 
 func Solve(root *TreeNode, depth int, ret *[][]int) {
 	if root != nil {
-		if len(*ret) < depth+1 {
+		if depth >= len(*ret) {
 			*ret = append(*ret, []int{})
 		}
 		(*ret)[depth] = append((*ret)[depth], root.Val)
