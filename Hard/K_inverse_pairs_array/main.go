@@ -8,7 +8,7 @@ func kInversePairs(n int, k int) int {
 	for i := range cache {
 		cache[i] = make([]int, k+1)
 	}
-	cache[0][0] = 0
+	cache[0][0] = 1
 	for i := 1; i <= n; i++ {
 		var tmp int
 		for j := 0; j <= k; j++ {
