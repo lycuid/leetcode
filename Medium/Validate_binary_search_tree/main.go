@@ -9,12 +9,13 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-func Aux(root *TreeNode, min, max int) bool {
-	return root == nil || (root.Val > min && root.Val < max && Aux(root.Left, min, root.Val) && Aux(root.Right, root.Val, max))
+func Solve(root *TreeNode, min, max int) bool {
+	return root == nil || root.Val > min && root.Val < max &&
+		Solve(root.Left, min, root.Val) && Solve(root.Right, root.Val, max)
 }
 
 func isValidBST(root *TreeNode) bool {
-	return Aux(root, math.MinInt, math.MaxInt)
+	return Solve(root, math.MinInt, math.MaxInt)
 }
 
 func main() {}
