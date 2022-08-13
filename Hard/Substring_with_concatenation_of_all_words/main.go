@@ -1,35 +1,35 @@
 // https://leetcode.com/problems/substring-with-concatenation-of-all-words/
 package main
 
-func ValidWindow(start, end, word_len int, s *string, word_freq *map[string]int) bool {
-	window_freq := make(map[string]int)
-	for i := start; i < end; i += word_len {
-		word := (*s)[i : i+word_len]
-		if _, found := (*word_freq)[word]; !found {
+func ValidWindow(sub string, n int, freq1 map[string]int) bool {
+	freq2 := make(map[string]int)
+	for i := 0; i < len(sub); i += n {
+		word := sub[i : i+n]
+		if _, found := freq1[word]; !found {
 			return false
 		}
-		window_freq[word]++
+		freq2[word]++
 	}
-	for word, f1 := range window_freq {
-		if f2, found := (*word_freq)[word]; !found || f1 != f2 {
+	for k, v := range freq2 {
+		if freq1[k] != v {
 			return false
 		}
 	}
 	return true
 }
 
-func findSubstring(s string, words []string) (res []int) {
-	word_len, word_freq := len(words[0]), make(map[string]int)
-	window := len(words) * word_len
-	for i := range words {
-		word_freq[words[i]]++
+func findSubstring(s string, words []string) (ret []int) {
+	freq1, n := make(map[string]int), len(words[0])
+	for _, word := range words {
+		freq1[word]++
 	}
+	window := len(words) * n
 	for i := 0; i <= len(s)-window; i++ {
-		if ValidWindow(i, i+window, word_len, &s, &word_freq) {
-			res = append(res, i)
+		if ValidWindow(s[i:i+window], n, freq1) {
+			ret = append(ret, i)
 		}
 	}
-	return res
+	return ret
 }
 
 func main() {}
