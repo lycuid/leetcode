@@ -1,60 +1,15 @@
 // https://leetcode.com/problems/roman-to-integer/
-
 package main
 
-func romanToInt(s string) int {
-	romans := map[string]int{
-		"":  0,
-		"I": 1,
-		"V": 5,
-		"X": 10,
-		"L": 50,
-		"C": 100,
-		"D": 500,
-		"M": 1000,
-	}
-	preRomans := map[int]int{
-		5:    1,
-		10:   1,
-		50:   10,
-		100:  10,
-		500:  100,
-		1000: 100,
-	}
-
-	if len(s) <= 1 {
-		return romans[s]
-	}
-
-	result := 0
-	add := true
-
-	for i := len(s) - 1; i > 0; i-- {
-		number := romans[string(s[i])]
-
-		if add {
-			result += number
-		} else {
-			result -= number
+func romanToInt(s string) (ret int) {
+	romans := []int{'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000}
+	for i, cur, prev := len(s)-1, 0, 0; i >= 0; i, prev = i-1, cur {
+		cur = romans[s[i]]
+		if ret = ret + cur; cur < prev {
+			ret -= (2 * cur)
 		}
-
-		if next, ok := preRomans[number]; ok {
-			if next == romans[string(s[i-1])] {
-				add = false
-				continue
-			}
-		}
-
-		add = true
 	}
-
-	if add {
-		result += romans[string(s[0])]
-	} else {
-		result -= romans[string(s[0])]
-	}
-
-	return result
+	return ret
 }
 
 func main() {}
