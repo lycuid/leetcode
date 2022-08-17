@@ -1,4 +1,4 @@
-// https://leetcode.com/problems/construct-target-array-with-multiple-Sums/
+// https://leetcode.com/problems/construct-target-array-with-multiple-sums/
 package main
 
 type PriorityQueue struct {
