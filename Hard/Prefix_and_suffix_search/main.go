@@ -1,8 +1,6 @@
 // https://leetcode.com/problems/prefix-and-suffix-search/
 package main
 
-import "fmt"
-
 type WordFilter struct {
 	inner map[string]int
 }
@@ -12,7 +10,7 @@ func Constructor(words []string) WordFilter {
 	for index, word := range words {
 		for i := len(word); i >= 0; i-- {
 			for j := 0; j <= len(word); j++ {
-				s := fmt.Sprintf("%s.%s", word[:i], word[j:])
+				s := word[:i] + "." + word[j:]
 				if inner[s] <= index {
 					inner[s] = index
 				}
@@ -23,7 +21,7 @@ func Constructor(words []string) WordFilter {
 }
 
 func (this *WordFilter) F(prefix string, suffix string) int {
-	s := fmt.Sprintf("%s.%s", prefix, suffix)
+	s := prefix + "." + suffix
 	if index, found := this.inner[s]; found {
 		return index
 	}
