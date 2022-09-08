@@ -7,16 +7,12 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-func inorder(root *TreeNode, arr *[]int) {
-	if root != nil {
-		inorder(root.Left, arr)
-		(*arr) = append(*arr, root.Val)
-		inorder(root.Right, arr)
-	}
-}
-
 func inorderTraversal(root *TreeNode) (ret []int) {
-	inorder(root, &ret)
+	if root != nil {
+		ret = append(ret, inorderTraversal(root.Left)...)
+		ret = append(ret, root.Val)
+		ret = append(ret, inorderTraversal(root.Right)...)
+	}
 	return ret
 }
 
