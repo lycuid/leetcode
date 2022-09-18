@@ -16,15 +16,12 @@ func Max(x, y int) int {
 }
 
 func trap(height []int) (ret int) {
-	n := len(height)
-	greater, water := make([]int, n), make([]int, n)
-	greater[n-1] = height[n-1]
-	for i := n - 2; i >= 0; i-- {
-		greater[i] = Max(height[i], greater[i+1])
+	n, post := len(height), make([]int, len(height)+1)
+	for i := n - 1; i >= 0; i-- {
+		post[i] = Max(height[i], post[i+1])
 	}
-	for i := 1; i < n-1; i++ {
-		water[i] = Max(0, Min(height[i-1], greater[i+1])-height[i]+water[i-1])
-		ret += water[i]
+	for i, prev := 0, 0; i < n; i, prev = i+1, Max(prev, height[i]) {
+		ret += Max(0, Min(prev, post[i+1])-height[i])
 	}
 	return ret
 }
