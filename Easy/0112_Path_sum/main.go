@@ -7,14 +7,14 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-func hasPathSum(r *TreeNode, t int) bool {
+func hasPathSum(r *TreeNode, sum int) bool {
 	if r == nil {
 		return false
 	}
-	if r.Val == t && r.Left == nil && r.Right == nil {
-		return true
+	if r.Left == nil && r.Right == nil {
+		return r.Val == sum
 	}
-	return hasPathSum(r.Left, t-r.Val) || hasPathSum(r.Right, t-r.Val)
+	return hasPathSum(r.Left, sum-r.Val) || hasPathSum(r.Right, sum-r.Val)
 }
 
 func main() {}
