@@ -1,4 +1,4 @@
-// https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/description/
+// https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/
 package main
 
 func min(x, y int) int {
