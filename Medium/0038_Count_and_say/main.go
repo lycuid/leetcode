@@ -1,33 +1,28 @@
 // https://leetcode.com/problems/count-and-say/
 package main
 
-import "bytes"
+import "fmt"
 
-func Say(s string) string {
-	var res bytes.Buffer
-	i, count := 0, '1'
-	for i = 1; i < len(s); i++ {
-		if s[i] != s[i-1] {
-			res.WriteRune(count)
-			res.WriteByte(s[i-1])
-			count = '1'
-			continue
+func Slice(str string) (count int, value byte) {
+	if len(str) > 0 {
+		value = str[0]
+		for i := 0; i < len(str) && str[i] == value; i++ {
+			count++
 		}
-		count++
 	}
-	res.WriteRune(count)
-	res.WriteByte(s[i-1])
-	return res.String()
+	return count, value
 }
 
-func countAndSay(n int) string {
+func countAndSay(n int) (ret string) {
 	if n == 1 {
 		return "1"
 	}
-	if n == 2 {
-		return "11"
+	for prev := countAndSay(n - 1); len(prev) > 0; {
+		count, value := Slice(prev)
+		ret += fmt.Sprintf("%d%c", count, value)
+		prev = prev[count:]
 	}
-	return Say(countAndSay(n - 1))
+	return ret
 }
 
 func main() {}
