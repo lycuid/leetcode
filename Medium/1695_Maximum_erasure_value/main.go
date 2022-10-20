@@ -7,8 +7,7 @@ func maximumUniqueSubarray(nums []int) (res int) {
 		for ; cache[nums[i]] && j <= i; j++ {
 			sum, cache[nums[j]] = sum-nums[j], false
 		}
-		sum, cache[nums[i]] = sum+nums[i], true
-		if sum > res {
+		if sum, cache[nums[i]] = sum+nums[i], true; sum > res {
 			res = sum
 		}
 	}
