@@ -1,23 +1,24 @@
 // https://leetcode.com/problems/group-anagrams/
 package main
 
-type AlphaCount struct {
-	inner [26]int
+import "sort"
+
+func SortString(str string) string {
+	bytes := []byte(str)
+	sort.Slice(bytes, func(i, j int) bool { return bytes[i] < bytes[j] })
+	return string(bytes)
 }
 
-func groupAnagrams(strs []string) (sets [][]string) {
-	grams := make(map[AlphaCount][]string)
+func groupAnagrams(strs []string) (ret [][]string) {
+	cache := make(map[string][]string)
 	for _, str := range strs {
-		count := AlphaCount{}
-		for _, ch := range str {
-			count.inner[ch-'a']++
-		}
-		grams[count] = append(grams[count], str)
+		sorted := SortString(str)
+		cache[sorted] = append(cache[sorted], str)
 	}
-	for _, set := range grams {
-		sets = append(sets, set)
+	for _, val := range cache {
+		ret = append(ret, val)
 	}
-	return sets
+	return ret
 }
 
 func main() {}
