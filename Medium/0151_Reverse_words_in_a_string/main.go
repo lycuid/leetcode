@@ -1,34 +1,17 @@
 // https://leetcode.com/problems/reverse-words-in-a-string/
 package main
 
-import "strings"
-
-func reverseWords(s string) string {
-	ss := []string{}
-
-	str := []byte{}
-	for i, val := range s {
-		if val == ' ' {
-			if len(str) > 0 {
-				ss = append(ss, string(str))
-				str = []byte{}
-			}
-		} else {
-			str = append(str, s[i])
+func reverseWords(s string) (ret string) {
+	for i, j := 0, 0; i < len(s); {
+		for ; i < len(s) && s[i] == ' '; i++ {
+		}
+		for j = i; i < len(s) && s[i] != ' '; i++ {
+		}
+		if j < i {
+			ret = " " + s[j:i] + ret
 		}
 	}
-	if len(str) > 0 {
-		ss = append(ss, string(str))
-	}
-
-	l := len(ss) - 1
-	for i := 0; i <= l/2; i++ {
-		temp := ss[i]
-		ss[i] = ss[l-i]
-		ss[l-i] = temp
-	}
-
-	return strings.Join(ss, " ")
+	return ret[1:]
 }
 
 func main() {}
