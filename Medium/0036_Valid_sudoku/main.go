@@ -1,70 +1,31 @@
 // https://leetcode.com/problems/valid-sudoku/
-
 package main
 
-import "strconv"
-
-func check_rows(s [][]byte) bool {
-  visited := make(map[int]bool)
-  for i := 0; i < 9; i++ {
-    for j := 0; j < 9; j++ {
-      if num, err := strconv.Atoi(string(s[i][j])); err == nil {
-        if _, ok := visited[num]; ok {
-          return false
-        }
-        visited[num] = true
-      }
-    }
-    for k := range visited {
-      delete(visited, k)
-    }
-  }
-  return true
+func isValidSudoku(board [][]byte) bool {
+	for i := 0; i < 9; i++ {
+		var horizontal, vertical, box [9]bool
+		for j := 0; j < 9; j++ {
+			if hy, hx := i, j; board[hy][hx] != '.' {
+				if horizontal[board[hy][hx]-'1'] {
+					return false
+				}
+				horizontal[board[hy][hx]-'1'] = true
+			}
+			if vy, vx := j, i; board[vy][vx] != '.' {
+				if vertical[board[vy][vx]-'1'] {
+					return false
+				}
+				vertical[board[vy][vx]-'1'] = true
+			}
+			if by, bx := ((i%3)*3)+(j/3), ((i/3)*3)+(j%3); board[by][bx] != '.' {
+				if box[board[by][bx]-'1'] {
+					return false
+				}
+				box[board[by][bx]-'1'] = true
+			}
+		}
+	}
+	return true
 }
 
-func check_columns(s [][]byte) bool {
-  visited := make(map[int]bool)
-  for i := 0; i < 9; i++ {
-    for j := 0; j < 9; j++ {
-      if num, err := strconv.Atoi(string(s[j][i])); err == nil {
-        if _, ok := visited[num]; ok {
-          return false
-        }
-        visited[num] = true
-      }
-    }
-    for k := range visited {
-      delete(visited, k)
-    }
-  }
-  return true
-}
-
-func check_boxes(s [][]byte) bool {
-  visited := make(map[int]bool)
-  for x := 0; x < 9; x+=3 {
-    for y := 0; y < 9; y+=3 {
-      for i := 0; i < 3; i++ {
-        for j := 0; j < 3; j++ {
-          if num, err := strconv.Atoi(string(s[j+y][i+x])); err == nil {
-            if _, ok := visited[num]; ok {
-              return false
-            }
-            visited[num] = true
-          }
-        }
-      }
-      for k := range visited {
-        delete(visited, k)
-      }
-    }
-  }
-  return true
-}
-
-func isValidSudoku(s [][]byte) bool {
-  return check_rows(s[:]) && check_columns(s[:]) && check_boxes(s[:])
-}
-
-func main() { }
-
+func main() {}
