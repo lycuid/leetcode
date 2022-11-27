@@ -2,22 +2,16 @@
 package main
 
 func productExceptSelf(nums []int) []int {
-	l := len(nums)
-
-	products := make([]int, l)
-	products[l-1] = nums[l-1]
-	for i := l - 2; i > 0; i-- {
-		products[i] = nums[i] * products[i+1]
+	partial, result := make([]int, len(nums)+1), make([]int, len(nums))
+	partial[len(nums)] = 1
+	for i := len(nums) - 1; i >= 0; i-- {
+		partial[i] = partial[i+1] * nums[i]
 	}
-
-	acc := 1
-	for i := 0; i < l-1; i++ {
-		products[i] = acc * products[i+1]
-		acc *= nums[i]
+	for i, product := 0, 1; i < len(result); i++ {
+		result[i] = product * partial[i+1]
+		product *= nums[i]
 	}
-	products[l-1] = acc
-
-	return products
+	return result
 }
 
 func main() {}
