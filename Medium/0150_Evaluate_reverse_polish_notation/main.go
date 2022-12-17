@@ -3,43 +3,32 @@ package main
 
 import "strconv"
 
-type Stack struct {
-	inner  [1e4 + 1]int
-	cursor int
-}
-
-func (this *Stack) Push(item int) {
-	this.inner[this.cursor] = item
-	this.cursor++
-}
-
-func (this *Stack) Pop() int {
-	this.cursor--
-	return this.inner[this.cursor]
-}
-
 func evalRPN(tokens []string) int {
-	stack := Stack{}
+	stack := []int{}
+	Pop := func() (item int) {
+		item, stack = stack[len(stack)-1], stack[:len(stack)-1]
+		return item
+	}
 	for _, token := range tokens {
 		switch token {
-		case "+", "-", "*", "/":
-			b, a := stack.Pop(), stack.Pop()
-			switch token {
-			case "+":
-				stack.Push(a + b)
-			case "-":
-				stack.Push(a - b)
-			case "*":
-				stack.Push(a * b)
-			case "/":
-				stack.Push(a / b)
-			}
+		case "+":
+			snd, fst := Pop(), Pop()
+			stack = append(stack, fst+snd)
+		case "-":
+			snd, fst := Pop(), Pop()
+			stack = append(stack, fst-snd)
+		case "*":
+			snd, fst := Pop(), Pop()
+			stack = append(stack, fst*snd)
+		case "/":
+			snd, fst := Pop(), Pop()
+			stack = append(stack, fst/snd)
 		default:
 			num, _ := strconv.Atoi(token)
-			stack.Push(num)
+			stack = append(stack, num)
 		}
 	}
-	return stack.Pop()
+	return stack[0]
 }
 
 func main() {}
