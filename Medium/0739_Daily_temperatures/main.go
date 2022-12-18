@@ -1,13 +1,13 @@
 // https://leetcode.com/problems/daily-temperatures/
 package main
 
-func dailyTemperatures(temp []int) []int {
-	ret, stack, cursor := make([]int, len(temp)), make([]int, len(temp)), 0
-	for i := range temp {
-		for ; cursor > 0 && temp[stack[cursor-1]] < temp[i]; cursor-- {
-			ret[stack[cursor-1]] = i - stack[cursor-1]
+func dailyTemperatures(temperatures []int) []int {
+	ret, stack := make([]int, len(temperatures)), []int{}
+	for i, temp := range temperatures {
+		for n := len(stack) - 1; n >= 0 && temp > temperatures[stack[n]]; n = len(stack) - 1 {
+			ret[stack[n]], stack = i-stack[n], stack[:n]
 		}
-		stack[cursor], cursor = i, cursor+1
+		stack = append(stack, i)
 	}
 	return ret
 }
