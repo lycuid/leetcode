@@ -7,25 +7,23 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-func Solve(root *TreeNode, depth int, ret *[][]int) {
+func Aux(root *TreeNode, depth int, ret *[][]int) {
 	if root != nil {
-		if len(*ret) < depth+1 {
+		for depth > len(*ret)-1 {
 			*ret = append(*ret, []int{})
 		}
-		(*ret)[depth] = append((*ret)[depth], root.Val)
-		Solve(root.Left, depth+1, ret)
-		Solve(root.Right, depth+1, ret)
+		if depth%2 == 0 {
+			(*ret)[depth] = append((*ret)[depth], root.Val)
+		} else {
+			(*ret)[depth] = append([]int{root.Val}, (*ret)[depth]...)
+		}
+		Aux(root.Left, depth+1, ret)
+		Aux(root.Right, depth+1, ret)
 	}
 }
 
 func zigzagLevelOrder(root *TreeNode) (ret [][]int) {
-	Solve(root, 0, &ret)
-	for i := 1; i < len(ret); i += 2 {
-		n := len(ret[i])
-		for j := 0; j < n/2; j++ {
-			ret[i][j], ret[i][n-j-1] = ret[i][n-j-1], ret[i][j]
-		}
-	}
+	Aux(root, 0, &ret)
 	return ret
 }
 
