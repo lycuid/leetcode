@@ -7,21 +7,15 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-func isMirrored(left, right *TreeNode) bool {
-	if (left == nil && right != nil) || (left != nil && right == nil) {
-		return false
-	}
-	if left == nil && right == nil {
-		return true
-	}
-	return left.Val == right.Val && isMirrored(left.Left, right.Right) && isMirrored(left.Right, right.Left)
+func Aux(left, right *TreeNode) bool {
+	return (left == nil && right == nil) ||
+		(left != nil && right != nil &&
+			left.Val == right.Val &&
+			Aux(left.Left, right.Right) && Aux(left.Right, right.Left))
 }
 
 func isSymmetric(root *TreeNode) bool {
-	if root == nil {
-		return true
-	}
-	return isMirrored(root.Left, root.Right)
+	return root == nil || Aux(root.Left, root.Right)
 }
 
 func main() {}
