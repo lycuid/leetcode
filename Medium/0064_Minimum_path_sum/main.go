@@ -1,79 +1,56 @@
 // https://leetcode.com/problems/minimum-path-sum/
 package main
 
-import "math"
+type Tuple struct{ y, x, value int }
+type PriorityQueue struct{ inner []Tuple }
 
-type Coordinate struct {
-	x, y int
+func MakePQ() PriorityQueue                   { return PriorityQueue{make([]Tuple, 1)} }
+func (this PriorityQueue) Empty() bool        { return len(this.inner) == 1 }
+func (this PriorityQueue) Less(i, j int) bool { return this.inner[i].value < this.inner[j].value }
+
+func (this *PriorityQueue) Push(item Tuple) {
+	this.inner = append(this.inner, item)
+	for i := len(this.inner) - 1; i > 1 && this.Less(i, i/2); i /= 2 {
+		this.inner[i], this.inner[i/2] = this.inner[i/2], this.inner[i]
+	}
 }
 
-type PriorityQueue struct {
-	inner  [200*200 + 1]Coordinate
-	cursor int
-}
-
-func (this *PriorityQueue) Push(item Coordinate, weight [][]int) {
-	this.inner[this.cursor] = item
-	for i := this.cursor; i > 0; i-- {
-		c1, c2 := this.inner[i], this.inner[i-1]
-		if weight[c1.x][c1.y] < weight[c2.x][c2.y] {
+func (this *PriorityQueue) Pop() Tuple {
+	item, n := this.inner[1], len(this.inner)-1
+	this.inner[1], this.inner = this.inner[n], this.inner[:n]
+	for i, j := 1, 2; j < n; i, j = j, j*2 {
+		if j+1 < n && this.Less(j+1, j) {
+			j++
+		}
+		if this.Less(i, j) {
 			break
 		}
-		this.inner[i], this.inner[i-1] = this.inner[i-1], this.inner[i]
+		this.inner[i], this.inner[j] = this.inner[j], this.inner[i]
 	}
-	this.cursor++
-}
-
-func (this *PriorityQueue) Pop() Coordinate {
-	this.cursor--
-	return this.inner[this.cursor]
-}
-
-func (this *PriorityQueue) Empty() bool {
-	return this.cursor == 0
-}
-
-func Min(x, y int) int {
-	if x < y {
-		return x
-	}
-	return y
+	return item
 }
 
 func minPathSum(grid [][]int) int {
-	m, n := len(grid), len(grid[0])
-
-	weight := make([][]int, m)
-	for i := range weight {
-		weight[i] = make([]int, n)
-		for j := range weight[i] {
-			weight[i][j] = math.MaxInt
-		}
+	visited, m, n := make([][]bool, len(grid)), len(grid), len(grid[0])
+	for i := range visited {
+		visited[i] = make([]bool, n)
 	}
-
-	pq, src := PriorityQueue{}, Coordinate{0, 0}
-	weight[0][0] = grid[0][0]
-	pq.Push(src, weight)
-	for !pq.Empty() {
-		p := pq.Pop()
-		if p.x+1 < m {
-			c := Coordinate{p.x + 1, p.y}
-			visited := weight[c.x][c.y] != math.MaxInt
-			weight[c.x][c.y] = Min(weight[c.x][c.y], weight[p.x][p.y]+grid[c.x][c.y])
-			if !visited {
-				pq.Push(c, weight)
+	pq := MakePQ()
+	for pq.Push(Tuple{0, 0, grid[0][0]}); !pq.Empty(); {
+		if root := pq.Pop(); !visited[root.y][root.x] {
+			visited[root.y][root.x], grid[root.y][root.x] = true, root.value
+			if root.y == m-1 && root.x == n-1 {
+				break
 			}
-		}
-		if p.y+1 < n {
-			c := Coordinate{p.x, p.y + 1}
-			visited := weight[c.x][c.y] != math.MaxInt
-			weight[c.x][c.y] = Min(weight[c.x][c.y], weight[p.x][p.y]+grid[c.x][c.y])
-			if !visited {
-				pq.Push(c, weight)
+			for _, d := range [][]int{{0, 1}, {1, 0}} {
+				dy, dx := root.y+d[0], root.x+d[1]
+				if dy < m && dx < n && !visited[dy][dx] {
+					pq.Push(Tuple{dy, dx, root.value + grid[dy][dx]})
+				}
 			}
 		}
 	}
-	return weight[m-1][n-1]
+	return grid[m-1][n-1]
 }
 
 func main() {}
