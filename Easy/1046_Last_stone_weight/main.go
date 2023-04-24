@@ -1,29 +1,44 @@
 // https://leetcode.com/problems/last-stone-weight/
 package main
 
-import "sort"
+type PriorityQueue struct{ inner []int }
+
+func MakePQ() PriorityQueue         { return PriorityQueue{make([]int, 1)} }
+func (this PriorityQueue) Len() int { return len(this.inner) - 1 }
+
+func (this *PriorityQueue) Push(item int) {
+	this.inner = append(this.inner, item)
+	for i := len(this.inner) - 1; i > 1 && this.inner[i] > this.inner[i/2]; i /= 2 {
+		this.inner[i], this.inner[i/2] = this.inner[i/2], this.inner[i]
+	}
+}
+
+func (this *PriorityQueue) Pop() int {
+	item, n := this.inner[1], len(this.inner)-1
+	this.inner[1], this.inner = this.inner[n], this.inner[:n]
+	for i, j := 1, 2; j < n; i, j = j, j*2 {
+		if j+1 < n && this.inner[j+1] > this.inner[j] {
+			j++
+		}
+		if this.inner[i] > this.inner[j] {
+			break
+		}
+		this.inner[i], this.inner[j] = this.inner[j], this.inner[i]
+	}
+	return item
+}
 
 func lastStoneWeight(stones []int) int {
-	sort.Ints(stones)
-	i := len(stones) - 2
-	for ; i >= 0; i-- {
-		if stones[i] == stones[i+1] {
-			i--
-			continue
-		}
-		stones[i] = stones[i+1] - stones[i]
-		for j, k := i-1, i; j >= 0; j-- {
-			if stones[j] <= stones[k] {
-				break
-			}
-			stones[j], stones[k] = stones[k], stones[j]
-			k--
+	pq := MakePQ()
+	for _, stone := range stones {
+		pq.Push(stone)
+	}
+	for pq.Push(0); pq.Len() >= 2; {
+		if item := pq.Pop() - pq.Pop(); item > 0 {
+			pq.Push(item)
 		}
 	}
-	if i < -1 {
-		return 0
-	}
-	return stones[0]
+	return pq.Pop()
 }
 
 func main() {}
