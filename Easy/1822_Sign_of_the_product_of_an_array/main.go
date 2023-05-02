@@ -1,29 +1,22 @@
 // https://leetcode.com/problems/sign-of-the-product-of-an-array/
 package main
 
-func signum(x int) int {
-	if x == 0 {
-		return 0
-	}
+func Abs(x int) int {
 	if x < 0 {
-		return -1
+		return -x
 	}
-	return 1
+	return x
 }
 
-func product(xs []int) int {
-	prod := 1
-	for _, x := range xs {
-		prod *= x
+func arraySign(nums []int) int {
+	ret := 1
+	for _, num := range nums {
+		if num == 0 {
+			return 0
+		}
+		ret *= (num / Abs(num))
 	}
-	return prod
-}
-
-func arraySign(xs []int) int {
-	for i, x := range xs {
-		xs[i] = signum(x)
-	}
-	return product(xs)
+	return ret
 }
 
 func main() {}
