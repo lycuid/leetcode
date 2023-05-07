@@ -1,42 +1,37 @@
 // https://leetcode.com/problems/basic-calculator/
 package main
 
-func ConsumeNumber(s *string) (ret int) {
+func ParseNumber(s *string) (num int) {
 	for ; len(*s) > 0 && (*s)[0] >= '0' && (*s)[0] <= '9'; *s = (*s)[1:] {
-		ret *= 10
-		ret += int((*s)[0] - '0')
+		num = num*10 + int((*s)[0]-'0')
 	}
-	return ret
+	return num
 }
 
-func Consume(s *string) (ret int) {
-	var (
-		Plus  = func(i, j int) int { return i + j }
-		Minus = func(i, j int) int { return i - j }
-	)
-	for operation := Plus; len(*s) > 0; {
+func Eval(s *string) (acc int) {
+	Plus, Minus := func(i int) { acc += i }, func(i int) { acc -= i }
+	for Action := Plus; len(*s) > 0; {
 		switch (*s)[0] {
-		case ' ':
-			break
-		case '-':
-			operation = Minus
 		case '+':
-			operation = Plus
+			Action = Plus
+		case '-':
+			Action = Minus
 		case '(':
 			*s = (*s)[1:]
-			ret = operation(ret, Consume(s))
+			Action(Eval(s))
 		case ')':
-			goto EXIT
+			goto DONE
+		case ' ':
 		default:
-			ret = operation(ret, ConsumeNumber(s))
+			Action(ParseNumber(s))
 			continue
 		}
 		*s = (*s)[1:]
 	}
-EXIT:
-	return ret
+DONE:
+	return acc
 }
 
-func calculate(s string) (ret int) { return Consume(&s) }
+func calculate(s string) int { return Eval(&s) }
 
 func main() {}
