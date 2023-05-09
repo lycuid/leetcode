@@ -2,42 +2,26 @@
 package main
 
 func spiralOrder(matrix [][]int) []int {
-	i, sx, sy, ex, ey := 0, 0, 0, len(matrix)-1, len(matrix[0])-1
-	ret := make([]int, (ex+1)*(ey+1))
-	for sx < ex && sy < ey {
-		for y := sy; y < ey; y++ {
-			ret[i] = matrix[sx][y]
-			i++
+	ret := make([]int, len(matrix)*len(matrix[0]))
+	y0, x0, y1, x1 := 0, 0, len(matrix)-1, len(matrix[0])-1
+	for c := 0; c < len(ret); {
+		for i := x0; i <= x1; i++ {
+			ret[c], c = matrix[y0][i], c+1
 		}
-		for x := sx; x < ex; x++ {
-			ret[i] = matrix[x][ey]
-			i++
+		for i := y0 + 1; i < y1; i++ {
+			ret[c], c = matrix[i][x1], c+1
 		}
-		for y := ey; y > sy; y-- {
-			ret[i] = matrix[ex][y]
-			i++
+		if y1 > y0 {
+			for i := x1; i >= x0; i-- {
+				ret[c], c = matrix[y1][i], c+1
+			}
 		}
-		for x := ex; x > sx; x-- {
-			ret[i] = matrix[x][sy]
-			i++
+		if x1 > x0 {
+			for i := y1 - 1; i > y0; i-- {
+				ret[c], c = matrix[i][x0], c+1
+			}
 		}
-		sx++
-		sy++
-		ex--
-		ey--
-	}
-	if sx == ex && sy == ey {
-		ret[i] = matrix[sx][sy]
-	} else if sx == ex {
-		for y := sy; y <= ey; y++ {
-			ret[i] = matrix[sx][y]
-			i++
-		}
-	} else if sy == ey {
-		for x := sx; x <= ex; x++ {
-			ret[i] = matrix[x][sy]
-			i++
-		}
+		y0, x0, y1, x1 = y0+1, x0+1, y1-1, x1-1
 	}
 	return ret
 }
