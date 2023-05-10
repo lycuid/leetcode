@@ -3,29 +3,27 @@ package main
 
 func generateMatrix(n int) [][]int {
 	ret := make([][]int, n)
-	for i := 0; i < n; i++ {
+	for i := range ret {
 		ret[i] = make([]int, n)
 	}
-	start, end, val := 0, n, 1
-	for start < end {
-		for i := start; i < end; i++ {
-			ret[start][i] = val
-			val++
+	x0, y0, x1, y1 := 0, 0, n-1, n-1
+	for num, m := 1, n*n; num <= m; x0, y0, x1, y1 = x0+1, y0+1, x1-1, y1-1 {
+		for i := x0; i <= x1; i++ {
+			ret[y0][i], num = num, num+1
 		}
-		for i := start + 1; i < end; i++ {
-			ret[i][end-1] = val
-			val++
+		for i := y0 + 1; i <= y1-1; i++ {
+			ret[i][x1], num = num, num+1
 		}
-		for i := end - 2; i >= start; i-- {
-			ret[end-1][i] = val
-			val++
+		if y1 > y0 {
+			for i := x1; i >= x0; i-- {
+				ret[y1][i], num = num, num+1
+			}
 		}
-		for i := end - 2; i > start; i-- {
-			ret[i][start] = val
-			val++
+		if x1 > x0 {
+			for i := y1 - 1; i >= y0+1; i-- {
+				ret[i][x0], num = num, num+1
+			}
 		}
-		start++
-		end--
 	}
 	return ret
 }
