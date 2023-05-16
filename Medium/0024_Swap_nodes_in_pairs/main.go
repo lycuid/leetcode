@@ -1,24 +1,20 @@
 // https://leetcode.com/problems/swap-nodes-in-pairs/
-
 package main
 
-// ListNode the definition for listnode.
 type ListNode struct {
 	Val  int
 	Next *ListNode
 }
 
-func swapPairs(head *ListNode) *ListNode {
-	if head == nil || head.Next == nil {
-		return head
+func swapPairs(head *ListNode) (next *ListNode) {
+	if head != nil {
+		if next = head.Next; next != nil {
+			head.Next, next.Next = swapPairs(next.Next), head
+		} else {
+			next = head
+		}
 	}
-
-	next := head.Next
-	head.Next = swapPairs(head.Next.Next)
-	next.Next = head
 	return next
 }
 
-func main() { }
-
-
+func main() {}
