@@ -1,45 +1,55 @@
 // https://leetcode.com/problems/evaluate-division/
 package main
 
-func calcEquation(equations [][]string, values []float64, queries [][]string) []float64 {
-	paths := make(map[string]map[string]float64)
-	for e, eq := range equations {
-		n, d := eq[0], eq[1]
-		if _, ok := paths[n]; !ok {
-			paths[n] = make(map[string]float64)
-			paths[n][n] = 1
-		}
-		paths[n][d] = values[e]
-		if _, ok := paths[d]; !ok {
-			paths[d] = make(map[string]float64)
-			paths[d][d] = 1
-		}
-		paths[d][n] = 1 / values[e]
-	}
+type Solution struct {
+	edges    map[string]map[string]float64
+	on_stack map[string]bool
+}
 
-	for from, children := range paths {
-		for child := range children {
-			for to := range paths[child] {
-				if _, ok := paths[from][to]; !ok {
-					paths[from][to] = paths[from][child] * paths[child][to]
-				}
-				if _, ok := paths[to][from]; !ok {
-					paths[to][from] = 1 / paths[from][to]
-				}
+func MakeSolution(equations [][]string, values []float64) *Solution {
+	edges := make(map[string]map[string]float64)
+	for i, eqn := range equations {
+		from, to := eqn[0], eqn[1]
+		if _, found := edges[from]; !found {
+			edges[from] = make(map[string]float64)
+		}
+		if _, found := edges[to]; !found {
+			edges[to] = make(map[string]float64)
+		}
+		edges[from][to], edges[to][from] = values[i], 1/values[i]
+	}
+	return &Solution{edges, make(map[string]bool)}
+}
+
+func (this *Solution) Query(from, to string) float64 {
+	if val, found := this.edges[from][to]; found {
+		return val
+	}
+	if val, found := this.edges[to][from]; found {
+		return 1 / val
+	}
+	this.on_stack[from] = true
+	for child, value := range this.edges[from] {
+		if !this.on_stack[child] {
+			if dist := this.Query(child, to); dist != -1 {
+				this.edges[from][to] = value * dist
+				break
 			}
 		}
 	}
-
-	res := make([]float64, len(queries))
-	for i, query := range queries {
-		n, d := query[0], query[1]
-		if val, ok := paths[n][d]; ok {
-			res[i] = val
-		} else {
-			res[i] = -1
-		}
+	this.on_stack[from] = false
+	if value, found := this.edges[from][to]; found {
+		return value
 	}
-	return res
+	return -1
+}
+
+func calcEquation(equations [][]string, values []float64, queries [][]string) (ret []float64) {
+	solution := MakeSolution(equations, values)
+	for _, query := range queries {
+		ret = append(ret, solution.Query(query[0], query[1]))
+	}
+	return ret
 }
 
 func main() {}
