@@ -3,43 +3,47 @@ package main
 
 import "fmt"
 
-type Timing struct {
-	time, count int
-}
-
-type Checkin struct {
-	time    int
-	station string
+type Tuple struct {
+	Station string
+	Time    int
 }
 
 type UndergroundSystem struct {
-	timings  map[string]Timing
-	checkins [1e6 + 1]Checkin
+	Checkin     map[int]Tuple
+	AverageTime map[string]*[2]int
 }
 
 func Constructor() UndergroundSystem {
-	return UndergroundSystem{timings: make(map[string]Timing)}
+	return UndergroundSystem{
+		Checkin:     make(map[int]Tuple),
+		AverageTime: make(map[string]*[2]int),
+	}
 }
 
-func (this *UndergroundSystem) CheckIn(id int, s string, t int) {
-	this.checkins[id] = Checkin{t, s}
+func Dist(key1, key2 string) string {
+	return fmt.Sprintf("%s-%s", key1, key2)
 }
 
-func (this *UndergroundSystem) CheckOut(id int, checkout string, t int) {
-	checkin := this.checkins[id]
-	timing := this.timings[Hash(checkin.station, checkout)]
-	timing.time += t - checkin.time
-	timing.count++
-	this.timings[Hash(checkin.station, checkout)] = timing
+func (this *UndergroundSystem) CheckIn(id int, stationName string, t int) {
+	this.Checkin[id] = Tuple{stationName, t}
 }
 
-func (this *UndergroundSystem) GetAverageTime(s string, e string) float64 {
-	timing := this.timings[Hash(s, e)]
-	return float64(timing.time) / float64(timing.count)
+func (this *UndergroundSystem) CheckOut(id int, stationName string, t int) {
+	checkin := this.Checkin[id]
+	dist, time := Dist(checkin.Station, stationName), t-checkin.Time
+	if value, found := this.AverageTime[dist]; found {
+		value[0], value[1] = value[0]+time, value[1]+1
+	} else {
+		this.AverageTime[dist] = &[2]int{time, 1}
+	}
+	delete(this.Checkin, id)
 }
 
-func Hash(s1, s2 string) string {
-	return fmt.Sprintf("%s->%s", s1, s2)
+func (this *UndergroundSystem) GetAverageTime(startStation string, endStation string) float64 {
+	if value, found := this.AverageTime[Dist(startStation, endStation)]; found {
+		return float64(value[0]) / float64(value[1])
+	}
+	return 0
 }
 
 func main() {}
