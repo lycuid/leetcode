@@ -1,15 +1,14 @@
 // https://leetcode.com/problems/minimum-flips-to-make-a-or-b-equal-to-c/
 package main
 
-func Count(ab, c int) int {
+func Count(a_b, c int) int {
 	if c == 1 {
-		if ab == 0 {
-			return c
-		} else {
-			return 0
+		if a_b == 0 {
+			return 1
 		}
+		return 0
 	}
-	return ab
+	return a_b
 }
 
 func minFlips(a int, b int, c int) (ret int) {
