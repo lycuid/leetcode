@@ -1,88 +1,70 @@
 // https://leetcode.com/problems/lru-cache/
 package main
 
-type List struct {
+type Node struct {
 	key, value int
-	prev, next *List
+	prev, next *Node
 }
 
 type LRUCache struct {
-	c_head, c_end *List
-	pairs         map[int]*List
-	capacity      int
+	capacity    int
+	inner       map[int]*Node
+	head, stale *Node
 }
 
-func (cache *LRUCache) Attach(l *List) {
-	if l == nil {
-		return
+func (cache *LRUCache) Attach(node *Node) {
+	if node != nil {
+		if node.next = cache.head; cache.head != nil {
+			cache.head.prev = node
+		} else {
+			cache.stale = node
+		}
+		cache.head, cache.capacity = node, cache.capacity-1
 	}
-	cache.capacity--
-	// first element.
-	if cache.c_head == nil {
-		cache.c_end = l
-	} else {
-		cache.c_head.prev = l
-	}
-	l.next = cache.c_head
-	l.prev = nil
-	cache.c_head = l
 }
 
-func (cache *LRUCache) Detach(l *List) {
-	if l == nil {
-		return
+func (cache *LRUCache) Detach(node *Node) *Node {
+	if node != nil {
+		if node.prev != nil {
+			node.prev.next = node.next
+		} else {
+			cache.head = node.next
+		}
+		if node.next != nil {
+			node.next.prev = node.prev
+		} else {
+			cache.stale = node.prev
+		}
+		node.next, node.prev, cache.capacity = nil, nil, cache.capacity+1
 	}
-	cache.capacity++
-	if l.prev != nil {
-		l.prev.next = l.next
-	} else {
-		cache.c_head = l.next
-	}
-	if l.next != nil {
-		l.next.prev = l.prev
-	} else {
-		cache.c_end = l.prev
-	}
+	return node
 }
 
 func Constructor(capacity int) LRUCache {
-	return LRUCache{
-		pairs:    make(map[int]*List),
-		capacity: capacity,
-	}
+	return LRUCache{capacity: capacity, inner: make(map[int]*Node)}
 }
 
 func (cache *LRUCache) Get(key int) int {
-	if list, ok := cache.pairs[key]; ok {
-		cache.Detach(list)
-		cache.Attach(list)
-		return list.value
+	if node := cache.inner[key]; node != nil {
+		cache.Attach(cache.Detach(node))
+		return node.value
 	}
 	return -1
 }
 
-func (cache *LRUCache) Put(key int, value int) {
-	// check if key exists, replace if exists and return.
-	if list, ok := cache.pairs[key]; ok {
-		list.value = value
-		cache.Detach(list)
-		cache.Attach(list)
-		return
+func (cache *LRUCache) Put(key, value int) {
+	node := cache.Detach(cache.inner[key])
+	if node == nil {
+		if cache.capacity == 0 {
+			if stale := cache.Detach(cache.stale); stale != nil {
+				delete(cache.inner, stale.key)
+			}
+		}
+		node = &Node{key: key, value: value}
+		cache.inner[key] = node
 	}
-
-	// create new list.
-	l := List{key: key, value: value}
-	cache.pairs[key] = &l
-	cache.Attach(&l)
-	if cache.capacity >= 0 {
-		return
-	}
-
-	// pop least recently used.
-	end := cache.c_end
-	cache.Detach(end)
-	cache.c_end = end.prev
-	delete(cache.pairs, end.key)
+	node.value = value
+	cache.Attach(node)
 }
 
 func main() {}
