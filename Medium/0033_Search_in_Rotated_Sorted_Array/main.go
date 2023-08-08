@@ -1,55 +1,32 @@
 // https://leetcode.com/problems/search-in-rotated-sorted-array/
-
 package main
 
-func get_pivot(nums []int) (pivot int) {
-  low, high := 0, len(nums) - 1
-  for low < high {
-    if low == high - 1 {
-      if nums[low] < nums[high] {
-        return low
-      } else {
-        return high
-      }
-    }
-
-    pivot = (low + high) / 2
-
-    if nums[pivot] < nums[low] {
-      high = pivot
-    } else if nums[pivot] > nums[high] {
-      low = pivot
-      // if none of the above is true, that means the array is not
-      // rotated.
-    } else { return 0 }
-  }
-  return pivot
-}
-
 func search(nums []int, target int) int {
-  pivot := get_pivot(nums)
-
-  low, high := 0, len(nums) - 1
-  if pivot > 0 {
-    if target <= nums[high] {
-      low = pivot
-    } else if target >= nums[low] {
-      high = pivot - 1
-    }
-  }
-
-  for low <= high {
-    mid := (low + high) / 2
-    if target > nums[mid] {
-      low = mid + 1
-    } else if target < nums[mid] {
-      high = mid - 1
-    } else {
-      return mid
-    }
-  }
-  return -1
+	n := len(nums)
+	var l, r int
+	for l1 := n - 1; l < l1; {
+		mid := (l + l1) / 2
+		if nums[mid] >= nums[l] && nums[mid] > nums[l1] {
+			l = mid + 1
+		} else if nums[mid] < nums[l1] {
+			l1 = mid
+		} else {
+			l, l1 = mid, mid
+		}
+	}
+	for r = l - 1 + n; l < r; {
+		if mid := ((l + r) / 2); nums[mid%n] > target {
+			r = mid
+		} else if nums[mid%n] < target {
+			l = mid + 1
+		} else {
+			l, r = mid, mid
+		}
+	}
+	if l %= n; nums[l] != target {
+		l = -1
+	}
+	return l
 }
 
-func main() { }
-
+func main() {}
