@@ -4,10 +4,10 @@ package main
 func combinationSum4(nums []int, target int) int {
 	cache := make([]int, target+1)
 	cache[0] = 1
-	for t := 1; t <= target; t++ {
+	for i := 1; i <= target; i++ {
 		for _, num := range nums {
-			if num <= t {
-				cache[t] += cache[t-num]
+			if num <= i {
+				cache[i] += cache[i-num]
 			}
 		}
 	}
