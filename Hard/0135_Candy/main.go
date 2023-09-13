@@ -2,8 +2,7 @@
 package main
 
 func candy(ratings []int) int {
-	n := len(ratings)
-	cache := make([]int, n)
+	cache, n := make([]int, len(ratings)), len(ratings)
 	for i := 1; i < n; i++ {
 		if ratings[i] > ratings[i-1] {
 			cache[i] = cache[i-1] + 1
