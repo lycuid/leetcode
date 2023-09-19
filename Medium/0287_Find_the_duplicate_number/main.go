@@ -2,14 +2,16 @@
 package main
 
 func findDuplicate(nums []int) int {
-	seen := make([]bool, len(nums))
-	for _, n := range nums {
-		if seen[n] {
-			return n
+	slow, fast, ptr := 0, 0, 0
+	for {
+		if slow, fast = nums[slow], nums[nums[fast]]; slow == fast {
+			break
 		}
-		seen[n] = true
 	}
-	return 0
+	for slow != ptr {
+		slow, ptr = nums[slow], nums[ptr]
+	}
+	return slow
 }
 
 func main() {}
