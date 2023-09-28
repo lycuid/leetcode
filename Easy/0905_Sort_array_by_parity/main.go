@@ -2,11 +2,9 @@
 package main
 
 func sortArrayByParity(nums []int) []int {
-	cursor := 0
-	for i := 0; i < len(nums); i++ {
-		if nums[i]%2 == 0 {
-			nums[cursor], nums[i] = nums[i], nums[cursor]
-			cursor++
+	for l, r := 0, len(nums)-1; l < r; l++ {
+		for ; l < r && nums[l]%2 != 0; r-- {
+			nums[l], nums[r] = nums[r], nums[l]
 		}
 	}
 	return nums
