@@ -2,15 +2,15 @@
 package main
 
 func reverseWords(s string) string {
-	str := []byte(s)
-	for start, end := 0, 0; end < len(str); start, end = end+1, end+1 {
-		for ; end < len(str) && str[end] != ' '; end++ {
+	ret := []byte(s)
+	for i, j := 0, 0; i < len(ret); i++ {
+		for j = i; i < len(ret) && ret[i] != ' '; i++ {
 		}
-		for i, j := start, end-1; i < j; i, j = i+1, j-1 {
-			str[i], str[j] = str[j], str[i]
+		for k := i - 1; j < k; j, k = j+1, k-1 {
+			ret[j], ret[k] = ret[k], ret[j]
 		}
 	}
-	return string(str)
+	return string(ret)
 }
 
 func main() {}
