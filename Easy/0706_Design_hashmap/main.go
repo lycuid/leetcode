@@ -1,28 +1,53 @@
 // https://leetcode.com/problems/design-hashmap/
 package main
 
-type MyHashMap struct {
-	hashmap []int
+type Bucket struct {
+	Next       *Bucket
+	key, value int
 }
 
-func Constructor() MyHashMap {
-	hashmap := make([]int, 1e6+1)
-	for i := range hashmap {
-		hashmap[i] = -1
+type MyHashMap struct{ buckets [100]*Bucket }
+
+func Constructor() MyHashMap { return MyHashMap{} }
+
+func (this MyHashMap) get_bucket(key int) *Bucket {
+	bucket := this.buckets[key%len(this.buckets)]
+	for bucket != nil && bucket.key != key {
+		bucket = bucket.Next
 	}
-	return MyHashMap{hashmap}
+	return bucket
 }
 
 func (this *MyHashMap) Put(key int, value int) {
-	this.hashmap[key] = value
+	head := &this.buckets[key%len(this.buckets)]
+	if bucket := this.get_bucket(key); bucket != nil {
+		bucket.value = value
+	} else {
+		bucket = &Bucket{key: key, value: value, Next: *head}
+		*head = bucket
+	}
 }
 
 func (this *MyHashMap) Get(key int) int {
-	return this.hashmap[key]
+	if bucket := this.get_bucket(key); bucket != nil {
+		return bucket.value
+	}
+	return -1
 }
 
 func (this *MyHashMap) Remove(key int) {
-	this.hashmap[key] = -1
+	var previous, current *Bucket
+	head := &this.buckets[key%len(this.buckets)]
+	for current = *head; current != nil; previous, current = current, current.Next {
+		if current.key == key {
+			if previous == nil {
+				*head = current.Next
+			} else {
+				previous.Next = current.Next
+			}
+			break
+		}
+	}
 }
 
 func main() {}
