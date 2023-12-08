@@ -9,16 +9,17 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-func tree2str(n *TreeNode) (ret string) {
-	if n != nil {
-		if ret = fmt.Sprintf("%d", n.Val); n.Left != nil || n.Right != nil {
-			ret += ("(" + tree2str(n.Left) + ")")
-			if n.Right != nil {
-				ret += ("(" + tree2str(n.Right) + ")")
-			}
+func tree2str(root *TreeNode) (str string) {
+	if root != nil {
+		str = fmt.Sprintf("%d", root.Val)
+		if root.Left != nil || root.Right != nil {
+			str += fmt.Sprintf("(%s)", tree2str(root.Left))
+		}
+		if root.Right != nil {
+			str += fmt.Sprintf("(%s)", tree2str(root.Right))
 		}
 	}
-	return ret
+	return str
 }
 
 func main() {}
