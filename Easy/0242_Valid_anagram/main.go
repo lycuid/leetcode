@@ -2,15 +2,15 @@
 package main
 
 func isAnagram(s string, t string) bool {
-	var count [26]int
+	cache := make(map[rune]int)
 	for _, ch := range s {
-		count[ch-'a']++
+		cache[ch]++
 	}
 	for _, ch := range t {
-		count[ch-'a']--
+		cache[ch]--
 	}
-	for _, c := range count {
-		if c != 0 {
+	for i := range cache {
+		if cache[i] != 0 {
 			return false
 		}
 	}
