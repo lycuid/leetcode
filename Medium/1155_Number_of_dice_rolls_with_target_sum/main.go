@@ -2,18 +2,22 @@
 package main
 
 func numRollsToTarget(n int, k int, target int) (ret int) {
-	cache := make([][]int, target+1)
+	cache := make([][]int, n+1)
 	for i := range cache {
-		if cache[i] = make([]int, n+1); 0 < i && i <= k {
-			cache[i][1] = 1
-		}
-	}
-	for t := 1; t <= target; t++ {
-		for j := 2; j <= n; j++ {
-			for roll := 1; roll <= t && roll <= k; roll++ {
-				cache[t][j] = (cache[t][j] + cache[t-roll][j-1]) % (1e9 + 7)
+		if cache[i] = make([]int, target+1); i == 1 {
+			for j := 0; j <= k && j <= target; j++ {
+				cache[i][j] = 1
 			}
 		}
 	}
-	return cache[target][n]
+	for i := 1; i <= n; i++ {
+		for t := 2; t <= target; t++ {
+			for roll := 1; roll <= k && roll < t; roll++ {
+				cache[i][t] = (cache[i][t] + cache[i-1][t-roll]) % (1e9 + 7)
+			}
+		}
+	}
+	return cache[n][target]
 }
+
+func main() {}
