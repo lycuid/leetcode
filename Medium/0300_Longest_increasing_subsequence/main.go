@@ -1,12 +1,14 @@
 // https://leetcode.com/problems/longest-increasing-subsequence/
 package main
 
-func lengthOfLIS(nums []int) (ret int) {
+func lengthOfLIS(nums []int) int {
 	lis := []int{nums[0]}
 	for _, num := range nums {
-		if l, r := 0, len(lis)-1; lis[r] >= num {
-			for mid := (l + r) / 2; l < r; mid = (l + r) / 2 {
-				if lis[mid] > num {
+		if l, r := 0, len(lis)-1; lis[r] < num {
+			lis = append(lis, num)
+		} else {
+			for l < r {
+				if mid := (l + r) / 2; lis[mid] > num {
 					r = mid
 				} else if lis[mid] < num {
 					l = mid + 1
@@ -16,8 +18,6 @@ func lengthOfLIS(nums []int) (ret int) {
 				}
 			}
 			lis[l] = num
-		} else {
-			lis = append(lis, num)
 		}
 	}
 	return len(lis)
