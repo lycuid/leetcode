@@ -3,37 +3,31 @@ package main
 
 import "sort"
 
-type Job struct{ start, end, profit int }
+type Tuple struct{ start, end, value int }
 
 func jobScheduling(startTime []int, endTime []int, profit []int) int {
-	n := len(profit)
-	job, cache := make([]Job, n), make([]int, n+1)
-	for i := range job {
-		job[i] = Job{startTime[i], endTime[i], profit[i]}
+	cache, n := make([]Tuple, len(profit)+1), len(profit)
+	for i := range profit {
+		cache[i+1] = Tuple{startTime[i], endTime[i], profit[i]}
 	}
-	sort.Slice(job, func(i, j int) bool { return job[i].start < job[j].start })
-	for i, l, r := n-1, 0, 0; i >= 0; i-- {
-		cache[i], l, r = job[i].profit, i+1, n-1
+	sort.Slice(cache, func(i, j int) bool { return cache[i].end < cache[j].end })
+	for i := 1; i < len(cache); i++ {
+		value, l, r := cache[i-1].value, 0, i-1
 		for l < r {
-			if mid := (l + r) / 2; job[mid].start < job[i].end {
+			if mid := (l + r) / 2; cache[mid].end <= cache[i].start {
 				l = mid + 1
-			} else if job[mid].start > job[i].end {
-				r = mid
 			} else {
-				break
+				r = mid
 			}
 		}
-		for ; l < n; l++ {
-			if job[i].end <= job[l].start {
-				cache[i] += cache[l]
-				break
-			}
+		for l > 0 && cache[l].end > cache[i].start {
+			l--
 		}
-		if cache[i] < cache[i+1] {
-			cache[i] = cache[i+1]
+		if cache[i].value += cache[l].value; value > cache[i].value {
+			cache[i].value = value
 		}
 	}
-	return cache[0]
+	return cache[n].value
 }
 
 func main() {}
