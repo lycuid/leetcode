@@ -7,24 +7,26 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-func Leaves(root *TreeNode, leaves *[]int) {
+func CollectLeaves(root *TreeNode, leaves *[]int) {
 	if root != nil {
 		if root.Left == nil && root.Right == nil {
 			*leaves = append(*leaves, root.Val)
 		}
-		Leaves(root.Left, leaves)
-		Leaves(root.Right, leaves)
+		CollectLeaves(root.Left, leaves)
+		CollectLeaves(root.Right, leaves)
 	}
 }
 
-func leafSimilar(root1 *TreeNode, root2 *TreeNode) bool {
-	var l1, l2 []int
-	Leaves(root1, &l1)
-	Leaves(root2, &l2)
-	for len(l1) > 0 && len(l2) > 0 && l1[0] == l2[0] {
-		l1, l2 = l1[1:], l2[1:]
+func leafSimilar(root1 *TreeNode, root2 *TreeNode) (ret bool) {
+	var leaves1, leaves2 []int
+	CollectLeaves(root1, &leaves1)
+	CollectLeaves(root2, &leaves2)
+	for i := 0; i < len(leaves1) && i < len(leaves2); i++ {
+		if leaves1[i] != leaves2[i] {
+			return false
+		}
 	}
-	return len(l1)+len(l2) == 0
+	return len(leaves1) == len(leaves2)
 }
 
 func main() {}
