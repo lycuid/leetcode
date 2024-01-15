@@ -1,30 +1,32 @@
 // https://leetcode.com/problems/find-players-with-zero-or-one-losses/
 package main
 
+import "sort"
+
+type Tuple struct{ w, l int }
+
 func findWinners(matches [][]int) [][]int {
-	var losses [1e5 + 1]int
-	for i := range losses {
-		losses[i] = -1
-	}
-	for _, match := range matches {
-		if losses[match[0]] == -1 {
-			losses[match[0]] = 0
+	cache, ret := make(map[int]*Tuple), make([][]int, 2)
+	for _, m := range matches {
+		if player, found := cache[m[0]]; found {
+			player.w++
+		} else {
+			cache[m[0]] = &Tuple{w: 1}
 		}
-		if losses[match[1]] == -1 {
-			losses[match[1]] = 0
-		}
-		losses[match[1]]++
-	}
-	var zeroes, ones []int
-	for player, loss := range losses {
-		if loss == 0 {
-			zeroes = append(zeroes, player)
-		}
-		if loss == 1 {
-			ones = append(ones, player)
+		if player, found := cache[m[1]]; found {
+			player.l++
+		} else {
+			cache[m[1]] = &Tuple{l: 1}
 		}
 	}
-	return [][]int{zeroes, ones}
+	for i, player := range cache {
+		if loss := player.l; loss < 2 {
+			ret[loss] = append(ret[loss], i)
+		}
+	}
+	sort.Ints(ret[0])
+	sort.Ints(ret[1])
+	return ret
 }
 
 func main() {}
