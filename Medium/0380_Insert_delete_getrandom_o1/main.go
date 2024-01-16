@@ -4,37 +4,36 @@ package main
 import "math/rand"
 
 type RandomizedSet struct {
-	inner   []int
-	indexOf map[int]int
+	cache map[int]int
+	list  []int
 }
 
 func Constructor() RandomizedSet {
-	return RandomizedSet{make([]int, 1), make(map[int]int)}
+	return RandomizedSet{cache: make(map[int]int)}
 }
 
-func (this *RandomizedSet) Insert(val int) bool {
-	if this.indexOf[val] > 0 {
-		return false
+func (this *RandomizedSet) Insert(val int) (found bool) {
+	if _, found = this.cache[val]; !found {
+		this.list = append(this.list, val)
+		this.cache[val] = len(this.list) - 1
 	}
-	this.inner, this.indexOf[val] = append(this.inner, val), len(this.inner)
-	return true
+	return !found
 }
 
-func (this *RandomizedSet) Remove(val1 int) bool {
-	if this.indexOf[val1] == 0 {
-		return false
+func (this *RandomizedSet) Remove(val int) (found bool) {
+	if _, found = this.cache[val]; found {
+		n, index := len(this.list)-1, this.cache[val]
+		this.list[index], this.list = this.list[n], this.list[:n]
+		if n != index {
+			this.cache[this.list[index]] = index
+		}
+		delete(this.cache, val)
 	}
-	i, j := this.indexOf[val1], len(this.inner)-1
-	val2 := this.inner[j]
-	this.inner[i], this.inner = this.inner[j], this.inner[:j]
-	if this.indexOf[val1], this.indexOf[val2] = 0, i; val1 == val2 {
-		this.indexOf[val2] = 0
-	}
-	return true
+	return found
 }
 
 func (this *RandomizedSet) GetRandom() int {
-	return this.inner[rand.Intn(len(this.inner)-1)+1]
+	return this.list[rand.Intn(len(this.list))]
 }
 
 func main() {}
