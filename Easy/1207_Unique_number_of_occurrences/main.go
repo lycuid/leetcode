@@ -1,13 +1,13 @@
 // https://leetcode.com/problems/unique-number-of-occurrences/
 package main
 
-func uniqueOccurrences(nums []int) bool {
-	freq, found := [2001]int{}, [2001]bool{}
-	for _, num := range nums {
-		freq[num+1000]++
+func uniqueOccurrences(arr []int) bool {
+	freq, found := make(map[int]int), make(map[int]bool)
+	for i := range arr {
+		freq[arr[i]]++
 	}
 	for i := range freq {
-		if freq[i] > 0 && found[freq[i]] {
+		if found[freq[i]] {
 			return false
 		}
 		found[freq[i]] = true
