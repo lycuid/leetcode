@@ -1,29 +1,31 @@
 // https://leetcode.com/problems/minimum-falling-path-sum/
 package main
 
-func Min(i, j int) int {
-	if i < j {
-		return i
-	}
-	return j
-}
-
-func minFallingPathSum(matrix [][]int) (ret int) {
-	for i, j := 0, 0; i < len(matrix); i++ {
-		for j, ret = 0, 1e9+7; j < len(matrix[i]); j++ {
-			if n := matrix[i][j]; i > 0 {
-				if n += matrix[i-1][j]; j > 0 {
-					n = Min(n, matrix[i][j]+matrix[i-1][j-1])
-				}
-				if j < len(matrix[i])-1 {
-					n = Min(n, matrix[i][j]+matrix[i-1][j+1])
-				}
-				matrix[i][j] = n
-			}
-			ret = Min(ret, matrix[i][j])
+func Min(num int, nums ...int) int {
+	for i := range nums {
+		if nums[i] < num {
+			num = nums[i]
 		}
 	}
-	return ret
+	return num
+}
+
+func minFallingPathSum(matrix [][]int) int {
+	cache, n := make([][]int, len(matrix)+1), len(matrix)
+	for i := range cache {
+		cache[i] = make([]int, len(matrix[0]))
+	}
+	for i := 1; i <= n; i++ {
+		for j := 0; j < len(cache[i]); j++ {
+			if cache[i][j] = matrix[i-1][j] + cache[i-1][j]; j > 0 {
+				cache[i][j] = Min(cache[i][j], matrix[i-1][j]+cache[i-1][j-1])
+			}
+			if j < len(cache[i])-1 {
+				cache[i][j] = Min(cache[i][j], matrix[i-1][j]+cache[i-1][j+1])
+			}
+		}
+	}
+	return Min(cache[n][0], cache[n]...)
 }
 
 func main() {}
