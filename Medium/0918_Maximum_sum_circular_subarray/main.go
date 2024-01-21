@@ -1,37 +1,16 @@
-// https://leetcode.com/problems/maximum-sum-circular-subarray/
+// https://leetcode.com/problems/house-robber/
 package main
 
-import "math"
-
-func maxSubarraySumCircular(nums []int) int {
-	var (
-		curr, sum [2]int
-		total     int
-	)
-	const Max, Min = 0, 1
-	sum[Max], sum[Min] = math.MinInt, math.MaxInt
-	for _, num := range nums {
-		if curr[Max] += num; curr[Max] < num {
-			curr[Max] = num
+func rob(nums []int) int {
+	for i := range nums {
+		if i > 1 && nums[i] < nums[i-2]+nums[i] {
+			nums[i] = nums[i-2] + nums[i]
 		}
-		if sum[Max] < curr[Max] {
-			sum[Max] = curr[Max]
+		if i > 0 && nums[i] < nums[i-1] {
+			nums[i] = nums[i-1]
 		}
-		if curr[Min] += num; curr[Min] > num {
-			curr[Min] = num
-		}
-		if sum[Min] > curr[Min] {
-			sum[Min] = curr[Min]
-		}
-		total += num
 	}
-	if total == sum[Min] {
-		return sum[Max]
-	}
-	if sum[Max] < total-sum[Min] {
-		sum[Max] = total - sum[Min]
-	}
-	return sum[Max]
+	return nums[len(nums)-1]
 }
 
 func main() {}
