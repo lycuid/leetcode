@@ -1,16 +1,22 @@
 // https://leetcode.com/problems/set-mismatch/
 package main
 
-func findErrorNums(nums []int) []int {
-	var dup, sum int
-	found, n := make([]bool, len(nums)), len(nums)
-	for _, num := range nums {
-		if found[num-1] {
-			dup = num
+func findErrorNums(nums []int) (ret []int) {
+	nums, ret = append([]int{0}, nums...), []int{0, 0}
+	for i := 1; i < len(nums); i++ {
+		for ret[0] != nums[i] && nums[i] != i {
+			if nums[i] == nums[nums[i]] {
+				ret[0] = nums[i]
+			}
+			nums[i], nums[nums[i]] = nums[nums[i]], nums[i]
 		}
-		found[num-1], sum = true, sum+num
 	}
-	return []int{dup, ((n * (n + 1)) / 2) - sum + dup}
+	for i := 1; ret[1] == 0 && i < len(nums); i++ {
+		if nums[i] == ret[0] && i != ret[0] {
+			ret[1] = i
+		}
+	}
+	return ret
 }
 
 func main() {}
