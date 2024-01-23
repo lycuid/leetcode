@@ -1,42 +1,29 @@
 // https://leetcode.com/problems/maximum-length-of-a-concatenated-string-with-unique-characters/
 package main
 
-func Max(x, y int) int {
-	if x > y {
-		return x
-	}
-	return y
-}
-
-func Aux(mask, i int, words []string, masks []int) (ret int) {
-	for j := i; j < len(words); j++ {
-		if mask&masks[j] == 0 {
-			ret = Max(ret, len(words[j])+Aux(mask|masks[j], j+1, words, masks))
-		}
-	}
-	return ret
-}
-
-func maxLength(arr []string) (ret int) {
-	var (
-		words []string
-		masks []int
-	)
-MAINLOOP:
-	for _, word := range arr {
-		mask := 0
-		for _, ch := range word {
-			if (mask>>(ch-'a'))&1 != 0 {
-				continue MAINLOOP
+func Aux(arr []string, cache []uint32, value uint32) (max int) {
+	for i := range cache {
+		if cache[i]>>27&1 == 0 && value&cache[i] == 0 {
+			if n := len(arr[i]) + Aux(arr[i+1:], cache[i+1:], value|cache[i]); n > max {
+				max = n
 			}
-			mask |= 1 << (ch - 'a')
 		}
-		words, masks = append(words, word), append(masks, mask)
 	}
-	for i := range words {
-		ret = Max(ret, len(words[i])+Aux(masks[i], i+1, words, masks))
+	return max
+}
+
+func maxLength(arr []string) int {
+	cache := make([]uint32, len(arr))
+	for i := range arr {
+		for j := range arr[i] {
+			var n uint32 = 1 << (arr[i][j] - 'a')
+			if cache[i]&n != 0 {
+				n = 1 << 27
+			}
+			cache[i] |= n
+		}
 	}
-	return ret
+	return Aux(arr, cache, 0)
 }
 
 func main() {}
