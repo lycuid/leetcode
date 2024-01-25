@@ -2,8 +2,7 @@
 package main
 
 func longestCommonSubsequence(text1 string, text2 string) int {
-	m, n := len(text1), len(text2)
-	cache := make([][]int, m+1)
+	cache, m, n := make([][]int, len(text1)+1), len(text1), len(text2)
 	for i := range cache {
 		cache[i] = make([]int, n+1)
 	}
