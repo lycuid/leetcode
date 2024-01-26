@@ -1,12 +1,11 @@
 // https://leetcode.com/problems/out-of-boundary-paths/
 package main
 
-const MOD = 1e9 + 7
-
 func findPaths(m, n, moves, start_r, start_c int) (ret int) {
 	if moves == 0 {
 		return 0
 	}
+	const MOD = 1e9 + 7
 	OpenEdges := func(r, c int) (ans int) {
 		if r == 0 {
 			ans++
