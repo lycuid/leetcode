@@ -1,30 +1,42 @@
 // https://leetcode.com/problems/implement-queue-using-stacks/
 package main
 
-type Stack struct{ inner []int }
+type Stack []int
 
-func (this *Stack) Push(item int) { this.inner = append(this.inner, item) }
-func (this *Stack) Peek() int     { return this.inner[len(this.inner)-1] }
-func (this *Stack) Empty() bool   { return len(this.inner) == 0 }
-func (this *Stack) Pop() (item int) {
-	item, this.inner = this.inner[len(this.inner)-1], this.inner[:len(this.inner)-1]
+func (stack Stack) Empty() bool    { return len(stack) == 0 }
+func (stack Stack) Top() int       { return stack[len(stack)-1] }
+func (stack *Stack) Push(item int) { *stack = append((*stack), item) }
+func (stack *Stack) Pop() (item int) {
+	item, *stack = (*stack)[len(*stack)-1], (*stack)[:len(*stack)-1]
 	return item
 }
 
-type MyQueue struct{ inner, alt Stack }
+type MyQueue struct{ in, out Stack }
 
 func Constructor() MyQueue { return MyQueue{} }
-func (this *MyQueue) Push(item int) {
-	for !this.inner.Empty() {
-		this.alt.Push(this.inner.Pop())
-	}
-	this.inner.Push(item)
-	for !this.alt.Empty() {
-		this.inner.Push(this.alt.Pop())
+
+func (this *MyQueue) Push(x int) { this.in.Push(x) }
+
+func (this *MyQueue) adjust() {
+	if this.out.Empty() {
+		for !this.in.Empty() {
+			this.out.Push(this.in.Pop())
+		}
 	}
 }
-func (this *MyQueue) Pop() int    { return this.inner.Pop() }
-func (this *MyQueue) Peek() int   { return this.inner.Peek() }
-func (this *MyQueue) Empty() bool { return this.inner.Empty() }
+
+func (this *MyQueue) Pop() int {
+	this.adjust()
+	return this.out.Pop()
+}
+
+func (this *MyQueue) Peek() int {
+	this.adjust()
+	return this.out.Top()
+}
+
+func (this *MyQueue) Empty() bool {
+	return this.in.Empty() && this.out.Empty()
+}
 
 func main() {}
