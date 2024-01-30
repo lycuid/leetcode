@@ -3,29 +3,37 @@ package main
 
 import "strconv"
 
+type Stack []int
+
+func (stack *Stack) Push(item int) { *stack = append(*stack, item) }
+
+func (stack *Stack) Pop() (item int) {
+	item, *stack = (*stack)[len(*stack)-1], (*stack)[:len(*stack)-1]
+	return item
+}
+
 func evalRPN(tokens []string) int {
-	stack := []int{}
-	Pop := func() (item int) {
-		item, stack = stack[len(stack)-1], stack[:len(stack)-1]
-		return item
-	}
+	var stack Stack
 	for _, token := range tokens {
 		switch token {
 		case "+":
-			snd, fst := Pop(), Pop()
-			stack = append(stack, fst+snd)
+			stack.Push(stack.Pop() + stack.Pop())
+			break
 		case "-":
-			snd, fst := Pop(), Pop()
-			stack = append(stack, fst-snd)
+			rhs, lhs := stack.Pop(), stack.Pop()
+			stack.Push(lhs - rhs)
+			break
 		case "*":
-			snd, fst := Pop(), Pop()
-			stack = append(stack, fst*snd)
+			stack.Push(stack.Pop() * stack.Pop())
+			break
 		case "/":
-			snd, fst := Pop(), Pop()
-			stack = append(stack, fst/snd)
+			rhs, lhs := stack.Pop(), stack.Pop()
+			stack.Push(lhs / rhs)
+			break
 		default:
-			num, _ := strconv.Atoi(token)
-			stack = append(stack, num)
+			if num, err := strconv.Atoi(token); err == nil {
+				stack = append(stack, num)
+			}
 		}
 	}
 	return stack[0]
