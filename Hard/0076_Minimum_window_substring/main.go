@@ -1,28 +1,33 @@
 // https://leetcode.com/problems/minimum-window-substring/
 package main
 
-func Check(c1, c2 [129]int) bool {
-	for i := 0; i < 129; i++ {
-		if c1[i] < c2[i] {
-			return false
-		}
-	}
-	return true
-}
+func minWindow(s string, t string) string {
+	var (
+		freq       [2][123 - 65]int
+		start, end int
+	)
 
-func minWindow(s string, t string) (ret string) {
-	var cache, chars [129]int
-	for _, ch := range t {
-		chars[ch]++
-	}
-	for i, j := 0, 0; i < len(s); i++ {
-		for cache[s[i]]++; Check(cache, chars); j++ {
-			if cache[s[j]]--; len(ret) == 0 || i+1-j < len(ret) {
-				ret = s[j : i+1]
+	Check := func() bool {
+		for i := range freq[0] {
+			if freq[0][i] > 0 && freq[1][i] < freq[0][i] {
+				return false
 			}
 		}
+		return true
 	}
-	return ret
+
+	for _, ch := range t {
+		freq[0][ch-'A']++
+	}
+	for i, j := 0, 0; j < len(s); j++ {
+		for freq[1][s[j]-'A']++; Check() && i <= j; i++ {
+			if (start == 0 && end == 0) || j+1-i < end-start {
+				start, end = i, j+1
+			}
+			freq[1][s[i]-'A']--
+		}
+	}
+	return s[start:end]
 }
 
 func main() {}
