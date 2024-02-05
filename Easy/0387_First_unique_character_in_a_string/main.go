@@ -6,8 +6,8 @@ func firstUniqChar(s string) int {
 	for _, ch := range s {
 		freq[ch-'a']++
 	}
-	for i, ch := range s {
-		if freq[ch-'a'] == 1 {
+	for i := range s {
+		if freq[s[i]-'a'] == 1 {
 			return i
 		}
 	}
