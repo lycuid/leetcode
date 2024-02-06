@@ -1,22 +1,19 @@
 // https://leetcode.com/problems/group-anagrams/
 package main
 
-import "sort"
-
-func SortString(str string) string {
-	bytes := []byte(str)
-	sort.Slice(bytes, func(i, j int) bool { return bytes[i] < bytes[j] })
-	return string(bytes)
-}
+type Freq struct{ inner [26]int }
 
 func groupAnagrams(strs []string) (ret [][]string) {
-	cache := make(map[string][]string)
+	cache := make(map[Freq][]string)
 	for _, str := range strs {
-		sorted := SortString(str)
-		cache[sorted] = append(cache[sorted], str)
+		var freq Freq
+		for _, ch := range str {
+			freq.inner[ch-'a']++
+		}
+		cache[freq] = append(cache[freq], str)
 	}
-	for _, val := range cache {
-		ret = append(ret, val)
+	for _, value := range cache {
+		ret = append(ret, value)
 	}
 	return ret
 }
