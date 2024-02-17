@@ -1,51 +1,44 @@
 // https://leetcode.com/problems/furthest-building-you-can-reach/
 package main
 
-func Max(x, y int) int {
-	if x > y {
-		return x
+type PriorityQueue struct{ inner []int }
+
+func MakePQ() PriorityQueue          { return PriorityQueue{make([]int, 1)} }
+func (pq PriorityQueue) Empty() bool { return len(pq.inner) == 1 }
+
+func (pq *PriorityQueue) Push(item int) {
+	pq.inner = append(pq.inner, item)
+	for i := len(pq.inner) - 1; i > 1 && pq.inner[i] < pq.inner[i/2]; i /= 2 {
+		pq.inner[i], pq.inner[i/2] = pq.inner[i/2], pq.inner[i]
 	}
-	return y
 }
 
-type PQ struct {
-	inner  []int
-	cursor int
-}
-
-func MakePQ(n int) PQ { return PQ{make([]int, n+2), 1} }
-
-func (this *PQ) Push(item int) {
-	this.inner[this.cursor] = item
-	for i := this.cursor; i > 1 && this.inner[i/2] > this.inner[i]; i /= 2 {
-		this.inner[i/2], this.inner[i] = this.inner[i], this.inner[i/2]
-	}
-	this.cursor++
-}
-
-func (this *PQ) Pop() (item int) {
-	item, this.cursor = this.inner[1], this.cursor-1
-	this.inner[1] = this.inner[this.cursor]
-	for i := 1; i*2 < this.cursor; {
-		j := i * 2
-		if i*2+1 < this.cursor && this.inner[i*2+1] < this.inner[j] {
-			j = i*2 + 1
+func (pq *PriorityQueue) Pop() int {
+	item, n := pq.inner[1], len(pq.inner)-1
+	pq.inner[1], pq.inner = pq.inner[n], pq.inner[:n]
+	for i, j := 1, 2; j < n; i, j = j, j*2 {
+		if j+1 < n && pq.inner[j+1] < pq.inner[j] {
+			j++
 		}
-		if this.inner[i] < this.inner[j] {
+		if pq.inner[i] < pq.inner[j] {
 			break
 		}
-		this.inner[i], this.inner[j] = this.inner[j], this.inner[i]
-		i = j
+		pq.inner[i], pq.inner[j] = pq.inner[j], pq.inner[i]
 	}
-	this.inner[this.cursor] = -1
 	return item
 }
 
 func furthestBuilding(heights []int, bricks int, ladders int) (index int) {
-	if ladders >= len(heights) {
-		return len(heights) - 1
+	if n := len(heights); ladders >= n {
+		return n - 1
 	}
-	pq := MakePQ(ladders + 1)
+	Max := func(i, j int) int {
+		if i > j {
+			return i
+		}
+		return j
+	}
+	pq := MakePQ()
 	for i := 1; i < ladders+1; i++ {
 		pq.Push(Max(0, heights[i]-heights[i-1]))
 	}
