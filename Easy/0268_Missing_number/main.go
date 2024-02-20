@@ -1,13 +1,17 @@
 // https://leetcode.com/problems/missing-number/
 package main
 
-func missingNumber(nums []int) (n int) {
-	for i := 0; i < len(nums); i++ {
-		for nums[i] != i && nums[i] < len(nums) {
+func missingNumber(nums []int) int {
+	n := len(nums)
+	for i := range nums {
+		for nums[i] != i && nums[i] != n {
 			nums[i], nums[nums[i]] = nums[nums[i]], nums[i]
 		}
 	}
-	for ; n < len(nums) && n == nums[n]; n++ {
+	for i := range nums {
+		if nums[i] != i {
+			return i
+		}
 	}
 	return n
 }
