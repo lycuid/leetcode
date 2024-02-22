@@ -2,12 +2,13 @@
 package main
 
 func findJudge(n int, trust [][]int) int {
-	in, out := make([]int, n+1), make([]int, n+1)
-	for _, t := range trust {
-		in[t[1]], out[t[0]] = in[t[1]]+1, out[t[0]]+1
+	cache := make([][2]int, n+1)
+	for i := range trust {
+		cache[trust[i][0]][0]++
+		cache[trust[i][1]][1]++
 	}
 	for i := 1; i <= n; i++ {
-		if in[i] == n-1 && out[i] == 0 {
+		if cache[i][0] == 0 && cache[i][1] == n-1 {
 			return i
 		}
 	}
