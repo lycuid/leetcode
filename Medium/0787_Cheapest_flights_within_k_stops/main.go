@@ -1,64 +1,66 @@
 // https://leetcode.com/problems/cheapest-flights-within-k-stops/
 package main
 
-type Tuple struct{ node, stops, weight int }
+type Tuple struct{ city, price, stops int }
 type PriorityQueue struct{ inner []Tuple }
 
-func MakePQ() PriorityQueue                   { return PriorityQueue{make([]Tuple, 1)} }
-func (this PriorityQueue) Empty() bool        { return len(this.inner) == 1 }
-func (this PriorityQueue) Less(i, j int) bool { return this.inner[i].weight < this.inner[j].weight }
-func (this *PriorityQueue) Push(item Tuple) {
-	this.inner = append(this.inner, item)
-	for i := len(this.inner) - 1; i > 1 && this.Less(i, i/2); i /= 2 {
-		this.inner[i], this.inner[i/2] = this.inner[i/2], this.inner[i]
+func MakePQ() PriorityQueue          { return PriorityQueue{make([]Tuple, 1)} }
+func (pq PriorityQueue) Empty() bool { return len(pq.inner) == 1 }
+
+func (pq PriorityQueue) Less(i, j int) bool {
+	if pq.inner[i].price == pq.inner[j].price {
+		return pq.inner[i].stops < pq.inner[j].stops
+	}
+	return pq.inner[i].price < pq.inner[j].price
+}
+
+func (pq *PriorityQueue) Push(item Tuple) {
+	pq.inner = append(pq.inner, item)
+	for i := len(pq.inner) - 1; i > 1 && pq.Less(i, i/2); i /= 2 {
+		pq.inner[i], pq.inner[i/2] = pq.inner[i/2], pq.inner[i]
 	}
 }
-func (this *PriorityQueue) Pop() Tuple {
-	item, n := this.inner[1], len(this.inner)-1
-	this.inner[1], this.inner = this.inner[n], this.inner[:n]
+
+func (pq *PriorityQueue) Pop() Tuple {
+	item, n := pq.inner[1], len(pq.inner)-1
+	pq.inner[1], pq.inner = pq.inner[n], pq.inner[:n]
 	for i, j := 1, 2; j < n; i, j = j, j*2 {
-		if j+1 < n && this.Less(j+1, j) {
+		if j+1 < n && pq.Less(j+1, j) {
 			j++
 		}
-		if this.Less(i, j) {
+		if pq.Less(i, j) {
 			break
 		}
-		this.inner[i], this.inner[j] = this.inner[j], this.inner[i]
+		pq.inner[i], pq.inner[j] = pq.inner[j], pq.inner[i]
 	}
 	return item
 }
 
 func findCheapestPrice(n int, flights [][]int, src int, dst int, k int) int {
-	pq, adj, stops, tup, ret := MakePQ(), make([][]int, n), make([]int, n), Tuple{node: src}, -1
-	for i := range adj {
-		adj[i] = make([]int, n)
-	}
-	for _, f := range flights {
-		adj[f[0]][f[1]] = f[2]
-	}
+	adj, pq, stops := make([][]Tuple, n+1), MakePQ(), make([]int, n+1)
 	for i := range stops {
 		stops[i] = k + 1
 	}
-	for pq.Push(tup); !pq.Empty(); {
-		if tup = pq.Pop(); tup.node == dst {
-			if ret == -1 || ret > tup.weight {
-				ret = tup.weight
-			}
+	for _, flight := range flights {
+		adj[flight[0]] = append(adj[flight[0]], Tuple{flight[1], flight[2], 1})
+	}
+	flight := Tuple{src, 0, 0}
+	for pq.Push(flight); !pq.Empty(); {
+		if flight = pq.Pop(); flight.city == dst {
+			return flight.price
 		}
-		if tup.stops < stops[tup.node] && tup.stops <= k {
-			stops[tup.node] = tup.stops + 1
-			for child, weight := range adj[tup.node] {
-				if weight > 0 {
-					pq.Push(Tuple{
-						node:   child,
-						stops:  tup.stops + 1,
-						weight: tup.weight + weight,
-					})
-				}
+		if flight.stops < stops[flight.city] && flight.stops <= k {
+			stops[flight.city] = flight.stops + 1
+			for _, new_flight := range adj[flight.city] {
+				pq.Push(Tuple{
+					new_flight.city,
+					flight.price + new_flight.price,
+					stops[flight.city],
+				})
 			}
 		}
 	}
-	return ret
+	return -1
 }
 
 func main() {}
