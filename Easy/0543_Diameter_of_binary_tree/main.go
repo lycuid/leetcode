@@ -7,32 +7,27 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-func Max(x, y int) int {
-	if x > y {
-		return x
+func Max(num int, nums ...int) int {
+	for i := range nums {
+		if nums[i] > num {
+			num = nums[i]
+		}
 	}
-	return y
+	return num
 }
 
-func Depth(root *TreeNode, depth *map[*TreeNode]int) int {
+func Aux(root *TreeNode) (int, int) {
 	if root == nil {
-		return 0
+		return 0, 0
 	}
-	(*depth)[root] = 1 + Max(Depth(root.Left, depth), Depth(root.Right, depth))
-	return (*depth)[root]
-}
-
-func Aux(root *TreeNode, depth *map[*TreeNode]int) int {
-	if root == nil {
-		return 0
-	}
-	return Max((*depth)[root.Left]+(*depth)[root.Right], Max(Aux(root.Left, depth), Aux(root.Right, depth)))
+	lmax, ldome := Aux(root.Left)
+	rmax, rdome := Aux(root.Right)
+	return 1 + Max(lmax, rmax), Max(ldome, rdome, 1+lmax+rmax)
 }
 
 func diameterOfBinaryTree(root *TreeNode) int {
-	depth := make(map[*TreeNode]int)
-	depth[root] = Depth(root, &depth)
-	return Aux(root, &depth)
+	max, dome := Aux(root)
+	return Max(max, dome) - 1
 }
 
 func main() {}
