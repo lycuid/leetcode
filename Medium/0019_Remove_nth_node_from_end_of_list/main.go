@@ -6,17 +6,21 @@ type ListNode struct {
 	Next *ListNode
 }
 
-func removeNthFromEnd(head *ListNode, n int) (ret *ListNode) {
-	var cache []*ListNode
-	for root := head; root != nil; root = root.Next {
-		cache = append(cache, root)
+func Aux(head *ListNode, depth int, n int) (*ListNode, int) {
+	if head == nil {
+		return head, depth - 1
 	}
-	for i := len(cache) - 1; i >= 0; i-- {
-		if n--; n != 0 {
-			cache[i].Next, ret = ret, cache[i]
-		}
+	new_head, size := Aux(head.Next, depth+1, n)
+	if size-depth == n {
+		return new_head, size
 	}
-	return ret
+	head.Next = new_head
+	return head, size
+}
+
+func removeNthFromEnd(head *ListNode, n int) (new_head *ListNode) {
+	new_head, _ = Aux(head, 1, n-1)
+	return new_head
 }
 
 func main() {}
