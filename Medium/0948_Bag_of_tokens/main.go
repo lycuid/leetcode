@@ -3,18 +3,18 @@ package main
 
 import "sort"
 
-func bagOfTokensScore(tokens []int, power int) (ret int) {
+func bagOfTokensScore(tokens []int, power int) (score int) {
 	sort.Ints(tokens)
 	for i, j := 0, len(tokens)-1; i <= j; {
-		if tokens[i] > power && i < j && ret > 0 {
-			power, j, ret = power+tokens[j], j-1, ret-1
-		} else if tokens[i] <= power {
-			power, i, ret = power-tokens[i], i+1, ret+1
+		if power < tokens[i] && i < j && score > 0 {
+			power, j, score = power+tokens[j], j-1, score-1
+		} else if power >= tokens[i] {
+			power, i, score = power-tokens[i], i+1, score+1
 		} else {
 			break
 		}
 	}
-	return ret
+	return score
 }
 
 func main() {}
