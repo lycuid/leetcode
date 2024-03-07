@@ -7,13 +7,14 @@ type ListNode struct {
 }
 
 func middleNode(head *ListNode) *ListNode {
-	mid, node, step := head, head, true
-	for node != nil {
-		if node, step = node.Next, !step; step {
-			mid = mid.Next
-		}
+	slow, fast := head, head
+	for fast.Next != nil && fast.Next.Next != nil {
+		slow, fast = slow.Next, fast.Next.Next
 	}
-	return mid
+	if fast.Next != nil {
+		slow = slow.Next
+	}
+	return slow
 }
 
 func main() {}
