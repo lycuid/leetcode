@@ -2,21 +2,21 @@
 package main
 
 func insert(intervals [][]int, newInterval []int) [][]int {
-	ret := [][]int{newInterval}
-	for i := 0; i < len(intervals); i++ {
-		fst, snd := ret[len(ret)-1], intervals[i]
-		if snd[0] < fst[0] {
-			fst, snd = snd, fst
-		}
-		if ret[len(ret)-1] = fst; fst[1] >= snd[0] {
-			if fst[1] < snd[1] {
-				ret[len(ret)-1][1] = snd[1]
+	intervals = append(intervals, newInterval)
+	for i := len(intervals) - 1; i > 0 && intervals[i][0] < intervals[i-1][0]; i-- {
+		intervals[i], intervals[i-1] = intervals[i-1], intervals[i]
+	}
+	var i int
+	for j := 1; j < len(intervals); j++ {
+		if intervals[i][1] >= intervals[j][0] {
+			if intervals[i][1] < intervals[j][1] {
+				intervals[i][1] = intervals[j][1]
 			}
 		} else {
-			ret = append(ret, snd)
+			intervals[i+1], i = intervals[j], i+1
 		}
 	}
-	return ret
+	return intervals[:i+1]
 }
 
 func main() {}
