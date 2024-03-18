@@ -3,19 +3,20 @@ package main
 
 import "sort"
 
-func findMinArrowShots(points [][]int) int {
-	sort.Slice(points, func(i, j int) bool { return points[i][0] < points[j][0] })
-	cache := [][]int{points[0]}
-	for i := 1; i < len(points); i++ {
-		if last := len(cache) - 1; points[i][0] <= cache[last][1] {
-			if cache[last][0] = points[i][0]; points[i][1] <= cache[last][1] {
-				cache[last][1] = points[i][1]
+func findMinArrowShots(points [][]int) (i int) {
+	sort.Slice(points, func(i, j int) bool {
+		return points[i][0] < points[j][0]
+	})
+	for j := 0; j < len(points); j++ {
+		if points[j][0] <= points[i][1] {
+			if points[i][1] > points[j][1] {
+				points[i][1] = points[j][1]
 			}
 		} else {
-			cache = append(cache, points[i])
+			points[i+1], i = points[j], i+1
 		}
 	}
-	return len(cache)
+	return i + 1
 }
 
 func main() {}
