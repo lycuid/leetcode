@@ -1,4 +1,4 @@
-// https://leetcode.com/problems/lfu-cache/description/
+// https://leetcode.com/problems/lfu-cache/
 package main
 
 type Block struct {

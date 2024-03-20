@@ -1,4 +1,4 @@
-// https://leetcode.com/problems/minimize-deviation-in-array/description/
+// https://leetcode.com/problems/minimize-deviation-in-array/
 package main
 
 type PriorityQueue struct{ inner []int }

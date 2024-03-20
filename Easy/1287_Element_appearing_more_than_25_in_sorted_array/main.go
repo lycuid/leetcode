@@ -1,4 +1,4 @@
-// https://leetcode.com/problems/element-appearing-more-than-25-in-sorted-array/description/
+// https://leetcode.com/problems/element-appearing-more-than-25-in-sorted-array/
 package main
 
 func findSpecialInteger(arr []int) int {
