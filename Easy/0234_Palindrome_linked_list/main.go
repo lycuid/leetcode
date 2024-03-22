@@ -6,12 +6,12 @@ type ListNode struct {
 	Next *ListNode
 }
 
-func Aux(l1 *ListNode, l2 **ListNode) bool {
-	if l1 == nil {
+func Aux(list *ListNode, rev **ListNode) bool {
+	if list == nil {
 		return true
 	}
-	if Aux(l1.Next, l2) && l1.Val == (*l2).Val {
-		(*l2) = (*l2).Next
+	if Aux(list.Next, rev) && list.Val == (*rev).Val {
+		*rev = (*rev).Next
 		return true
 	}
 	return false
