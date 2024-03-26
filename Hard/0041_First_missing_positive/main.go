@@ -2,23 +2,16 @@
 package main
 
 func firstMissingPositive(nums []int) int {
-	n := len(nums)
-	for i := 0; i < n; {
-		if nums[i] <= 0 || nums[i] > n || nums[i] == nums[nums[i]-1] {
-			if nums[i] != i+1 {
-				nums[i] = -1
-			}
-			i++
-			continue
-		}
-		nums[i], nums[nums[i]-1] = nums[nums[i]-1], nums[i]
-	}
-	for i, val := range nums {
-		if val == -1 {
-			return i + 1
+	for i := range nums {
+		for nums[i] > 0 && nums[i] < len(nums) && nums[i] != i+1 && nums[i] != nums[nums[i]-1] {
+			nums[i], nums[nums[i]-1] = nums[nums[i]-1], nums[i]
 		}
 	}
-	return n + 1
+	ret := 1
+	for ret <= len(nums) && nums[ret-1] == ret {
+		ret++
+	}
+	return ret
 }
 
 func main() {}
