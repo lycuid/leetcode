@@ -2,20 +2,20 @@
 package main
 
 func removeKdigits(num string, k int) string {
-	ns := []byte{'0'}
+	stack := []byte{'0'}
 	for i := range num {
-		for ; k > 0 && len(ns) > 0 && ns[len(ns)-1] > num[i]; k-- {
-			ns = ns[:len(ns)-1]
+		for ; k > 0 && stack[len(stack)-1] > num[i]; k-- {
+			stack = stack[:len(stack)-1]
 		}
-		ns = append(ns, num[i])
+		stack = append(stack, num[i])
 	}
-	for ; k > 0; k-- {
-		ns = ns[:len(ns)-1]
+	if k > 0 {
+		stack = stack[:len(stack)-k]
 	}
-	for len(ns) > 1 && ns[0] == '0' {
-		ns = ns[1:]
+	for len(stack) > 1 && stack[0] == '0' {
+		stack = stack[1:]
 	}
-	return string(ns)
+	return string(stack)
 }
 
 func main() {}
