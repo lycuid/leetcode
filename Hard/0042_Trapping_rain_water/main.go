@@ -1,29 +1,26 @@
 // https://leetcode.com/problems/trapping-rain-water/
 package main
 
-func Min(x, y int) int {
-	if x < y {
-		return x
+func Max(i, j int) int {
+	if i > j {
+		return i
 	}
-	return y
+	return j
 }
 
-func Max(x, y int) int {
-	if x > y {
-		return x
+func trap(height []int) (trapped int) {
+	right := make([]int, len(height)+1)
+	for i := len(right) - 2; i >= 0; i-- {
+		right[i] = Max(height[i], right[i+1])
 	}
-	return y
-}
-
-func trap(height []int) (ret int) {
-	n, post := len(height), make([]int, len(height)+1)
-	for i := n - 1; i >= 0; i-- {
-		post[i] = Max(height[i], post[i+1])
+	for i, left := 0, 0; i < len(height); i, left = i+1, Max(left, height[i]) {
+		wall := right[i+1]
+		if wall > left {
+			wall = left
+		}
+		trapped += Max(0, wall-height[i])
 	}
-	for i, prev := 0, 0; i < n; i, prev = i+1, Max(prev, height[i]) {
-		ret += Max(0, Min(prev, post[i+1])-height[i])
-	}
-	return ret
+	return trapped
 }
 
 func main() {}
