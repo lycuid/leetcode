@@ -7,21 +7,21 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-func Max(i, j int) int {
-	if i > j {
-		return i
-	}
-	return j
-}
-
-func Aux(root *TreeNode, n int) int {
+func sumNumbers(root *TreeNode) (sum int) {
 	if root != nil {
-		n = n*10 + root.Val
-		return Max(n, Aux(root.Left, n)+Aux(root.Right, n))
+		if root.Left == nil && root.Right == nil {
+			return root.Val
+		}
+		if root.Left != nil {
+			root.Left.Val += root.Val * 10
+			sum += sumNumbers(root.Left)
+		}
+		if root.Right != nil {
+			root.Right.Val += root.Val * 10
+			sum += sumNumbers(root.Right)
+		}
 	}
-	return 0
+	return sum
 }
-
-func sumNumbers(root *TreeNode) int { return Aux(root, 0) }
 
 func main() {}
