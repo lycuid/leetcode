@@ -11,13 +11,13 @@ func addOneRow(root *TreeNode, val int, depth int) *TreeNode {
 	if root != nil {
 		switch depth {
 		case 1:
-			return &TreeNode{val, root, nil}
+			return &TreeNode{Val: val, Left: root}
 		case 2:
-			root.Left = &TreeNode{val, root.Left, nil}
-			root.Right = &TreeNode{val, nil, root.Right}
+			root.Left = &TreeNode{Val: val, Left: root.Left}
+			root.Right = &TreeNode{Val: val, Right: root.Right}
 		default:
-			addOneRow(root.Left, val, depth-1)
-			addOneRow(root.Right, val, depth-1)
+			root.Left = addOneRow(root.Left, val, depth-1)
+			root.Right = addOneRow(root.Right, val, depth-1)
 		}
 	}
 	return root
