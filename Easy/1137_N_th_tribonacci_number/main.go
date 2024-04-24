@@ -2,14 +2,11 @@
 package main
 
 func tribonacci(n int) int {
-	tri := [3]int{0, 1, 1}
-	if n <= 2 {
-		return tri[n]
-	}
+	cache := [3]int{0, 1, 1}
 	for i := 3; i <= n; i++ {
-		tri[0], tri[1], tri[2] = tri[1], tri[2], tri[0]+tri[1]+tri[2]
+		cache[i%3] = cache[(i-1)%3] + cache[(i-2)%3] + cache[(i-3)%3]
 	}
-	return tri[2]
+	return cache[n%3]
 }
 
 func main() {}
