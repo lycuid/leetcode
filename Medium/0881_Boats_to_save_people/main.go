@@ -3,14 +3,14 @@ package main
 
 import "sort"
 
-func numRescueBoats(people []int, limit int) (l int) {
-	sort.Slice(people, func(i, j int) bool { return people[i] > people[j] })
-	for r := len(people) - 1; l <= r; l++ {
+func numRescueBoats(people []int, limit int) (count int) {
+	sort.Ints(people)
+	for l, r := 0, len(people)-1; l <= r; r, count = r-1, count+1 {
 		if people[l]+people[r] <= limit {
-			r--
+			l++
 		}
 	}
-	return l
+	return count
 }
 
 func main() {}
