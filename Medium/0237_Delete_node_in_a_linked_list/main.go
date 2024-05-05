@@ -6,8 +6,6 @@ type ListNode struct {
 	Next *ListNode
 }
 
-func deleteNode(node *ListNode) {
-	*node = *node.Next
-}
+func deleteNode(node *ListNode) { *node = *node.Next }
 
 func main() {}
