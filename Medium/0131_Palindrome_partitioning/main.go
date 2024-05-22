@@ -1,32 +1,39 @@
 // https://leetcode.com/problems/palindrome-partitioning/
 package main
 
-func IsPalindrome(s string, l, r int) bool {
-	for ; l <= r; l, r = l+1, r-1 {
-		if s[l] != s[r] {
+import "fmt"
+
+func IsPalindrome(str string) bool {
+	for i, j := 0, len(str)-1; i < j; i, j = i+1, j-1 {
+		if str[i] != str[j] {
 			return false
 		}
 	}
 	return true
 }
 
-func partition(s string) [][]string {
-	cache, n := make([][][]string, len(s)+1), len(s)
-	cache[0] = append(cache[0], []string{})
-	for r := 0; r < n; r++ {
-		for l, last := r, 0; l >= 0; l-- {
-			if IsPalindrome(s, l, r) {
-				for _, subs := range cache[l] {
-					cache[r+1], last = append(cache[r+1], []string{}), len(cache[r+1])
-					for _, sub := range subs {
-						cache[r+1][last] = append(cache[r+1][last], sub)
-					}
-					cache[r+1][last] = append(cache[r+1][last], s[l:r+1])
-				}
+func Aux(s string, start int, cache [][][]string) [][]string {
+	for i := start; i < len(s); i++ {
+		if IsPalindrome(s[start : i+1]) {
+			if cache[i+1] == nil {
+				Aux(s, i+1, cache)
+			}
+			for _, part := range cache[i+1] {
+				cache[start] = append(cache[start], append([]string{s[start : i+1]}, part...))
 			}
 		}
 	}
-	return cache[n]
+	return cache[start]
 }
 
-func main() {}
+func partition(s string) (ret [][]string) {
+	cache := make([][][]string, len(s)+1)
+	cache[len(s)] = [][]string{{}}
+	return Aux(s, 0, cache)
+}
+
+func main() {
+	fmt.Println(partition("a"))
+	fmt.Println(partition("aab"))
+	fmt.Println(partition("aaa"))
+}
