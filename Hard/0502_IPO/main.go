@@ -1,53 +1,61 @@
 // https://leetcode.com/problems/ipo/
 package main
 
-type Tuple struct{ fst, snd int }
-type Cmp = func(Tuple, Tuple) bool
+type Tuple struct{ capital, profit int }
+type Comparator = func(t1, t2 Tuple) bool
 
 type PriorityQueue struct {
 	inner []Tuple
-	F     Cmp
+	cmp   Comparator
 }
 
-func MakePQ(F Cmp) PriorityQueue       { return PriorityQueue{F: F, inner: make([]Tuple, 1)} }
-func (this PriorityQueue) Empty() bool { return len(this.inner) == 1 }
-func (this PriorityQueue) Top() Tuple  { return this.inner[1] }
+func MakePQ(cmp Comparator) PriorityQueue {
+	return PriorityQueue{make([]Tuple, 1), cmp}
+}
 
-func (this *PriorityQueue) Push(item Tuple) {
-	this.inner = append(this.inner, item)
-	for i := len(this.inner) - 1; i > 1 && this.F(this.inner[i], this.inner[i/2]); i /= 2 {
-		this.inner[i], this.inner[i/2] = this.inner[i/2], this.inner[i]
+func (pq PriorityQueue) Top() *Tuple {
+	if len(pq.inner) > 1 {
+		return &pq.inner[1]
+	}
+	return nil
+}
+
+func (pq *PriorityQueue) Push(item Tuple) {
+	pq.inner = append(pq.inner, item)
+	for i := len(pq.inner) - 1; i > 1 && pq.cmp(pq.inner[i], pq.inner[i/2]); i /= 2 {
+		pq.inner[i], pq.inner[i/2] = pq.inner[i/2], pq.inner[i]
 	}
 }
 
-func (this *PriorityQueue) Pop() Tuple {
-	item, n := this.inner[1], len(this.inner)-1
-	this.inner[1], this.inner = this.inner[n], this.inner[:n]
+func (pq *PriorityQueue) Pop() Tuple {
+	item, n := pq.inner[1], len(pq.inner)-1
+	pq.inner[1], pq.inner = pq.inner[n], pq.inner[:n]
 	for i, j := 1, 2; j < n; i, j = j, j*2 {
-		if j+1 < n && this.F(this.inner[j+1], this.inner[j]) {
+		if j+1 < n && pq.cmp(pq.inner[j+1], pq.inner[j]) {
 			j++
 		}
-		if this.F(this.inner[i], this.inner[j]) {
+		if pq.cmp(pq.inner[i], pq.inner[j]) {
 			break
 		}
-		this.inner[i], this.inner[j] = this.inner[j], this.inner[i]
+		pq.inner[i], pq.inner[j] = pq.inner[j], pq.inner[i]
 	}
 	return item
 }
 
 func findMaximizedCapital(k int, w int, profits []int, capital []int) int {
-	aux := MakePQ(func(t1, t2 Tuple) bool { return t1.snd < t2.snd })
+	min_pq := MakePQ(func(t1, t2 Tuple) bool { return t1.capital < t2.capital })
+	max_pq := MakePQ(func(t1, t2 Tuple) bool { return t1.profit > t2.profit })
 	for i := range profits {
-		aux.Push(Tuple{profits[i], capital[i]})
+		min_pq.Push(Tuple{capital: capital[i], profit: profits[i]})
 	}
-	for pq := MakePQ(func(t1, t2 Tuple) bool { return t1.fst > t2.fst }); k > 0; k-- {
-		for !aux.Empty() && aux.Top().snd <= w {
-			pq.Push(aux.Pop())
+	for ; k > 0; k-- {
+		for min_pq.Top() != nil && min_pq.Top().capital <= w {
+			max_pq.Push(min_pq.Pop())
 		}
-		if pq.Empty() {
+		if max_pq.Top() == nil {
 			break
 		}
-		w += pq.Pop().fst
+		w += max_pq.Pop().profit
 	}
 	return w
 }
