@@ -1,37 +1,38 @@
 // https://leetcode.com/problems/sort-an-array/
 package main
 
-func merge(nums []int, start, mid, end int) {
-	i, j, tmp := start, mid+1, []int{}
-	for i <= mid && j <= end {
-		if nums[i] < nums[j] {
-			tmp, i = append(tmp, nums[i]), i+1
+func Merge(nums []int, mid int) {
+	nums1, nums2, cache, i := nums[:mid], nums[mid:], make([]int, len(nums)), 0
+	for ; len(nums1) > 0 && len(nums2) > 0; i++ {
+		if nums1[0] < nums2[0] {
+			cache[i], nums1 = nums1[0], nums1[1:]
 		} else {
-			tmp, j = append(tmp, nums[j]), j+1
+			cache[i], nums2 = nums2[0], nums2[1:]
 		}
 	}
-	for ; i <= mid; i++ {
-		tmp = append(tmp, nums[i])
+	for ; len(nums1) > 0; i++ {
+		cache[i], nums1 = nums1[0], nums1[1:]
 	}
-	for ; j <= end; j++ {
-		tmp = append(tmp, nums[j])
+	for ; len(nums2) > 0; i++ {
+		cache[i], nums2 = nums2[0], nums2[1:]
 	}
-	for i := range tmp {
-		nums[start+i] = tmp[i]
+	for i, num := range cache {
+		nums[i] = num
 	}
 }
 
-func mergesort(nums []int, start, end int) {
-	if mid := (start + end) / 2; start < end {
-		mergesort(nums, start, mid)
-		mergesort(nums, mid+1, end)
-		merge(nums, start, mid, end)
+func Sort(nums []int) []int {
+	if n := len(nums); n > 1 {
+		mid := n / 2
+		Sort(nums[:mid])
+		Sort(nums[mid:])
+		Merge(nums, mid)
 	}
+	return nums
 }
 
 func sortArray(nums []int) []int {
-	mergesort(nums, 0, len(nums)-1)
-	return nums
+	return Sort(nums)
 }
 
 func main() {}
