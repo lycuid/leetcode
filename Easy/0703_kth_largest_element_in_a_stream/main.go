@@ -1,30 +1,50 @@
 // https://leetcode.com/problems/kth-largest-element-in-a-stream/
 package main
 
-type PriorityQueue struct{ inner []int }
+type PriorityQueue struct{ items []int }
 
-func MakePQ() PriorityQueue         { return PriorityQueue{make([]int, 1)} }
-func (this PriorityQueue) Len() int { return len(this.inner) - 1 }
-func (this PriorityQueue) Top() int { return this.inner[1] }
+func MakePQ(nums []int) (pq PriorityQueue) {
+	nums = append([]int{0}, nums...)
+	for i := len(nums) / 2; i > 0; i-- {
+		Heapify(nums, i)
+	}
+	return PriorityQueue{nums}
+}
 
-func (this *PriorityQueue) Push(item int) {
-	this.inner = append(this.inner, item)
-	for i := len(this.inner) - 1; i > 1 && this.inner[i] < this.inner[i/2]; i /= 2 {
-		this.inner[i], this.inner[i/2] = this.inner[i/2], this.inner[i]
+func Heapify(nums []int, i int) {
+	if j := i * 2; j < len(nums) {
+		if j+1 < len(nums) && nums[j+1] < nums[j] {
+			j++
+		}
+		if nums[j] < nums[i] {
+			nums[i], nums[j] = nums[j], nums[i]
+			Heapify(nums, j)
+		}
 	}
 }
 
-func (this *PriorityQueue) Pop() int {
-	item, n := this.inner[1], len(this.inner)-1
-	this.inner[1], this.inner = this.inner[n], this.inner[:n]
+func (pq PriorityQueue) Len() int { return len(pq.items) - 1 }
+
+func (pq PriorityQueue) Top() int { return pq.items[1] }
+
+func (pq *PriorityQueue) Push(item int) {
+	pq.items = append(pq.items, item)
+	for i := len(pq.items) - 1; i > 1 && pq.items[i] < pq.items[i/2]; i /= 2 {
+		pq.items[i], pq.items[i/2] = pq.items[i/2], pq.items[i]
+	}
+}
+
+func (pq *PriorityQueue) Pop() int {
+	item, n := pq.items[1], len(pq.items)-1
+	pq.items[1], pq.items = pq.items[n], pq.items[:n]
 	for i, j := 1, 2; j < n; i, j = j, j*2 {
-		if j+1 < n && this.inner[j+1] < this.inner[j] {
+		if j+1 < n && pq.items[j+1] < pq.items[j] {
 			j++
 		}
-		if this.inner[i] < this.inner[j] {
+		if pq.items[i] < pq.items[j] {
 			break
 		}
-		this.inner[i], this.inner[j] = this.inner[j], this.inner[i]
+		pq.items[i], pq.items[j] = pq.items[j], pq.items[i]
 	}
 	return item
 }
@@ -35,15 +55,12 @@ type KthLargest struct {
 }
 
 func Constructor(k int, nums []int) KthLargest {
-	pq := MakePQ()
-	for _, num := range nums {
-		pq.Push(num)
-	}
-	return KthLargest{k, pq}
+	return KthLargest{k: k, pq: MakePQ(nums)}
 }
 
 func (this *KthLargest) Add(val int) int {
-	for this.pq.Push(val); this.pq.Len() > this.k; {
+	this.pq.Push(val)
+	for this.pq.Len() > this.k {
 		this.pq.Pop()
 	}
 	return this.pq.Top()
