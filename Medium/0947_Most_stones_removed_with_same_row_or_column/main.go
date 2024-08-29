@@ -1,46 +1,48 @@
 // https://leetcode.com/problems/most-stones-removed-with-same-row-or-column/
 package main
 
-type Node struct{ x, y int }
+type Graph struct{ parent []int }
 
-func (n Node) AdjacentTo(m Node) bool { return n.x == m.x || n.y == m.y }
+func MakeGraph(n int) Graph {
+	parent := make([]int, n)
+	for i := range parent {
+		parent[i] = i
+	}
+	return Graph{parent}
+}
 
-type Set struct{ parent map[Node]Node }
-
-func (this *Set) Union(n, m Node) {
-	if pn, pm := this.Find(n), this.Find(m); pn != pm {
-		this.parent[pm] = pn
+func (graph *Graph) Union(x, y int) {
+	if px, py := graph.Find(x), graph.Find(y); px != py {
+		graph.parent[py] = px
 	}
 }
 
-func (this *Set) Find(n Node) Node {
-	if m, found := this.parent[n]; !found {
-		this.parent[n] = n
-	} else if n != m {
-		this.parent[n] = this.Find(this.parent[n])
+func (graph *Graph) Find(x int) int {
+	if graph.parent[x] != x {
+		graph.parent[x] = graph.Find(graph.parent[x])
 	}
-	return this.parent[n]
+	return graph.parent[x]
 }
 
-func removeStones(stones [][]int) (parents int) {
-	set, nodes := Set{make(map[Node]Node)}, make([]Node, len(stones))
+func removeStones(stones [][]int) (count int) {
+	AreGrouped := func(i, j int) bool {
+		return stones[i][0] == stones[j][0] || stones[i][1] == stones[j][1]
+	}
+	graph := MakeGraph(len(stones))
 	for i := range stones {
-		nodes[i] = Node{stones[i][0], stones[i][1]}
-	}
-	for i := range nodes {
-		for j := i + 1; j < len(nodes); j++ {
-			if nodes[i].AdjacentTo(nodes[j]) {
-				set.Union(nodes[i], nodes[j])
+		for j := i + 1; j < len(stones); j++ {
+			if AreGrouped(i, j) {
+				graph.Union(i, j)
 			}
 		}
 	}
-	visited := make(map[Node]bool)
-	for i := range nodes {
-		if parent := set.Find(nodes[i]); !visited[parent] {
-			visited[parent], parents = true, parents+1
+	groups := make([]bool, len(stones))
+	for i := range stones {
+		if g := graph.Find(i); !groups[g] {
+			groups[g], count = true, count+1
 		}
 	}
-	return len(nodes) - parents
+	return len(stones) - count
 }
 
 func main() {}
