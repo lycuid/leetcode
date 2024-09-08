@@ -7,24 +7,26 @@ type ListNode struct {
 }
 
 func splitListToParts(head *ListNode, k int) []*ListNode {
-	ret, n := make([]*ListNode, k), 0
+	nodes, n := make([]*ListNode, k), 0
 	for node := head; node != nil; node = node.Next {
 		n++
 	}
-	for i := range ret {
-		count := n / k
-		if i < n%k {
-			count++
+	for i := range nodes {
+		nodes[i] = &ListNode{Val: n / k}
+	}
+	for i := 0; i < n%k; i++ {
+		nodes[i].Val++
+	}
+	for i, tmp := range nodes {
+		nodes[i] = head
+		for j := 1; j < tmp.Val; j++ {
+			head = head.Next
 		}
-		node := head
-		for ret[i] = head; count > 1; count-- {
-			node = node.Next
-		}
-		if node != nil {
-			head, node.Next = node.Next, nil
+		if head != nil {
+			head, head.Next = head.Next, nil
 		}
 	}
-	return ret
+	return nodes
 }
 
 func main() {}
