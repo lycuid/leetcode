@@ -1,35 +1,24 @@
 // https://leetcode.com/problems/my-calendar-i/
 package main
 
-type Interval struct {
-	start, end int
-}
+import "slices"
 
-func (this *Interval) LessThan(interval Interval) bool {
-	return this.end <= interval.start
-}
+type MyCalendar struct{ bookings [][2]int }
 
-type MyCalendar struct {
-	inner []Interval
-}
-
-func Constructor() MyCalendar {
-	return MyCalendar{}
-}
+func Constructor() MyCalendar { return MyCalendar{} }
 
 func (this *MyCalendar) Book(start int, end int) bool {
-	interval, i := Interval{start, end}, 0
-	for ; i < len(this.inner); i++ {
-		if interval.LessThan(this.inner[i]) {
-			break
-		} else if !this.inner[i].LessThan(interval) {
-			return false
+	i := len(this.bookings) - 1
+	for ; i >= 0; i-- {
+		if this.bookings[i][0] >= end {
+			continue
 		}
+		if this.bookings[i][1] <= start {
+			break
+		}
+		return false
 	}
-	this.inner = append(this.inner, interval)
-	for j := len(this.inner) - 1; j > i; j-- {
-		this.inner[j], this.inner[j-1] = this.inner[j-1], this.inner[j]
-	}
+	this.bookings = slices.Insert(this.bookings, i+1, [2]int{start, end})
 	return true
 }
 
