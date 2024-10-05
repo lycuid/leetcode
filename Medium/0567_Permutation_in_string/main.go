@@ -2,27 +2,18 @@
 package main
 
 func checkInclusion(s1 string, s2 string) bool {
-	var f1, f2 [26]int
-	if n, m := len(s1), len(s2); n <= m {
-		eq := func() bool {
-			for i := 0; i < 26; i++ {
-				if f1[i] != f2[i] {
-					return false
-				}
+	if n := len(s1); n <= len(s2) {
+		var freq [2][26]int
+		for i := range s1 {
+			if freq[0][s1[i]-'a']++; i < n-1 {
+				freq[1][s2[i]-'a']++
 			}
-			return true
 		}
-		for i, ch := range s1 {
-			f1[ch-'a'], f2[s2[i]-'a'] = f1[ch-'a']+1, f2[s2[i]-'a']+1
-		}
-		if eq() {
-			return true
-		}
-		for i := 0; i+n < m; i++ {
-			f2[s2[i]-'a']--
-			if f2[s2[i+n]-'a']++; eq() {
+		for i := n - 1; i < len(s2); i++ {
+			if freq[1][s2[i]-'a']++; freq[0] == freq[1] {
 				return true
 			}
+			freq[1][s2[i-n+1]-'a']--
 		}
 	}
 	return false
