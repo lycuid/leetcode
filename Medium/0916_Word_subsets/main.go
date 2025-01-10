@@ -1,33 +1,33 @@
 // https://leetcode.com/problems/word-subsets/
 package main
 
-func wordSubsets(words1 []string, words2 []string) (ans []string) {
-	var freq [26]int
+func wordSubsets(words1 []string, words2 []string) (ret []string) {
+	var cache [26]int
 	for _, word := range words2 {
-		var freq2 [26]int
-		for _, ch := range word {
-			freq2[ch-'a']++
+		var freq [26]int
+		for i := range word {
+			freq[word[i]-'a']++
 		}
-		for i := 0; i < 26; i++ {
-			if freq2[i] > freq[i] {
-				freq[i] = freq2[i]
-			}
+		for i := range freq {
+			cache[i] = max(cache[i], freq[i])
 		}
 	}
-NEXT_WORD:
+
+mainloop:
 	for _, word := range words1 {
-		var freq2 [26]int
-		for _, ch := range word {
-			freq2[ch-'a']++
+		var freq [26]int
+		for i := range word {
+			freq[word[i]-'a']++
 		}
-		for i := 0; i < 26; i++ {
-			if freq2[i] < freq[i] {
-				continue NEXT_WORD
+		for i := range freq {
+			if freq[i] < cache[i] {
+				continue mainloop
 			}
 		}
-		ans = append(ans, word)
+		ret = append(ret, word)
 	}
-	return ans
+
+	return ret
 }
 
 func main() {}
