@@ -1,41 +1,45 @@
-// https://leetcode.com/problems/lexicographically-smallest-equivalent-string/
+// https://leetcode.com/problems/lexicographically-smallest-equivalent-string/description/
 package main
 
 type Graph struct{ parent [26]int }
 
-func MakeGraph() (graph Graph) {
-	for i := range graph.parent {
-		graph.parent[i] = i
+func NewGraph() *Graph {
+	var parent [26]int
+	for i := range parent {
+		parent[i] = i
 	}
-	return graph
+	return &Graph{parent}
 }
 
-func (this *Graph) Union(x, y int) {
-	if px, py := this.Find(this.parent[x]), this.Find(this.parent[y]); px != py {
+func (g *Graph) Union(x, y int) {
+	if px, py := g.Find(x), g.Find(y); px != py {
 		if px < py {
-			this.parent[py] = px
+			g.parent[py] = px
 		} else {
-			this.parent[px] = py
+			g.parent[px] = py
 		}
 	}
 }
 
-func (this *Graph) Find(x int) int {
-	if x != this.parent[x] {
-		this.parent[x] = this.Find(this.parent[x])
+func (g *Graph) Find(x int) int {
+	if x != g.parent[x] {
+		g.parent[x] = g.Find(g.parent[x])
 	}
-	return this.parent[x]
+	return g.parent[x]
 }
 
 func smallestEquivalentString(s1 string, s2 string, baseStr string) string {
-	graph, ret := MakeGraph(), make([]byte, len(baseStr))
-	for i := range s1 {
+	var (
+		graph = NewGraph()
+		res   = make([]byte, len(baseStr))
+	)
+	for i := 0; i < len(s1); i++ {
 		graph.Union(int(s1[i]-'a'), int(s2[i]-'a'))
 	}
-	for i, ch := range baseStr {
-		ret[i] = byte(graph.Find(int(ch-'a')) + 'a')
+	for i := range res {
+		res[i] = byte(graph.Find(int(baseStr[i]-'a'))) + 'a'
 	}
-	return string(ret)
+	return string(res)
 }
 
 func main() {}
