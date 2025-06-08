@@ -1,24 +1,24 @@
 // https://leetcode.com/problems/lexicographical-numbers/
 package main
 
-func Aux(num, last int) (nums []int) {
-	if num != 0 && num <= last {
-		nums = append(nums, num)
-		if ns := Aux(num*10, last); len(ns) > 0 {
-			nums = append(nums, ns...)
-		}
-	}
-	for i := 1; i <= 9 && num+i <= last; i++ {
-		nums = append(nums, num+i)
-		if ns := Aux((num+i)*10, last); len(ns) > 0 {
-			nums = append(nums, ns...)
-		}
-	}
-	return nums
-}
-
 func lexicalOrder(n int) []int {
-	return Aux(0, n)
+	var (
+		ret = make([]int, 0, n+1)
+		Aux func(int)
+	)
+	Aux = func(num int) {
+		if num <= n {
+			ret = append(ret, num)
+		}
+		num *= 10
+		for i := 0; i < 10 && num+i <= n; i++ {
+			Aux(num + i)
+		}
+	}
+	for i := 1; i < 10 && i <= n; i++ {
+		Aux(i)
+	}
+	return ret
 }
 
 func main() {}
