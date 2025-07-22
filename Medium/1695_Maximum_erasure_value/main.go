@@ -1,17 +1,16 @@
 // https://leetcode.com/problems/maximum-erasure-value/
 package main
 
-func maximumUniqueSubarray(nums []int) (res int) {
-	var cache [1e4 + 1]bool
-	for i, j, sum := 0, 0, 0; i < len(nums); i++ {
+func maximumUniqueSubarray(nums []int) (count int) {
+	cache, current := make(map[int]bool), 0
+	for i, j := 0, 0; i < len(nums); i++ {
 		for ; cache[nums[i]] && j <= i; j++ {
-			sum, cache[nums[j]] = sum-nums[j], false
+			cache[nums[j]], current = false, current-nums[j]
 		}
-		if sum, cache[nums[i]] = sum+nums[i], true; sum > res {
-			res = sum
-		}
+		cache[nums[i]], current = true, current+nums[i]
+		count = max(count, current)
 	}
-	return res
+	return count
 }
 
 func main() {}
