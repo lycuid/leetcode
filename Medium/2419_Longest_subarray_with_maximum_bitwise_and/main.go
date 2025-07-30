@@ -1,21 +1,20 @@
 // https://leetcode.com/problems/longest-subarray-with-maximum-bitwise-and/
+
 package main
 
-func longestSubarray(nums []int) (count int) {
-	maxnum := nums[0]
-	for _, num := range nums {
-		maxnum = max(maxnum, num)
-	}
-	for i, n := 0, len(nums); i < n; i++ {
-		if nums[i] == maxnum {
-			j := i
-			for i+1 < n && nums[i+1] == maxnum {
-				i++
+func longestSubarray(nums []int) (size int) {
+	if n := len(nums); n > 0 {
+		maxnum := nums[0]
+		for _, num := range nums {
+			maxnum = max(maxnum, num)
+		}
+		for i, j := 0, 0; i < n; i = j + 1 {
+			for j = i; j < n && nums[j] == maxnum; j++ {
 			}
-			count = max(count, i-j+1)
+			size = max(size, j-i)
 		}
 	}
-	return count
+	return size
 }
 
 func main() {}
