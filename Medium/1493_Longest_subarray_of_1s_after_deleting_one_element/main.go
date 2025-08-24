@@ -1,24 +1,21 @@
 // https://leetcode.com/problems/longest-subarray-of-1s-after-deleting-one-element/
 package main
 
-func longestSubarray(nums []int) (ret int) {
-	for l, r, zeroes := 0, 0, 0; r < len(nums); r++ {
-		if nums[r] == 0 {
-			zeroes++
-		}
-		for ; zeroes > 1; l++ {
-			if nums[l] == 0 {
-				zeroes--
-			}
-		}
-		if n := r - l + 1 - zeroes; n > ret {
-			ret = n
+func longestSubarray(nums []int) (count int) {
+	pre := make([]int, len(nums)+1)
+	for i := range nums {
+		if nums[i] == 1 {
+			pre[i+1] = pre[i] + nums[i]
 		}
 	}
-	if ret == len(nums) {
-		return ret - 1
+	nums = append(nums, 0)
+	for i := len(nums) - 2; i >= 0; i-- {
+		if nums[i] == 1 {
+			nums[i] += nums[i+1]
+		}
+		count = max(count, pre[i]+nums[i+1])
 	}
-	return ret
+	return count
 }
 
 func main() {}
