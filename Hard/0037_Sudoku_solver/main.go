@@ -1,48 +1,41 @@
 // https://leetcode.com/problems/sudoku-solver/
 package main
 
-func ValidBoard(x, y int, ch byte, board *[][]byte) bool {
-	for i := 0; i < 9; i++ {
-		hx, hy := x, i
-		if (*board)[hx][hy] == ch {
+func isValid(board [][]byte, i, j int, ch byte) bool {
+	for k := 0; k < 9; k++ {
+		if board[i][k] == ch {
 			return false
 		}
-		vx, vy := i, y
-		if (*board)[vx][vy] == ch {
+		if board[k][j] == ch {
 			return false
 		}
-		bx, by := ((x/3)*3)+(i/3), ((y/3)*3)+(i%3)
-		if (*board)[bx][by] == ch {
+		if board[i/3*3+(k/3)][j/3*3+(k%3)] == ch {
 			return false
 		}
 	}
 	return true
 }
 
-func Solve(i, j int, board *[][]byte) bool {
-	if i == 9 {
+func Aux(board [][]byte, index int) bool {
+	if index >= 81 {
 		return true
 	}
-	if j == 9 {
-		return Solve(i+1, 0, board)
+	if board[index/9][index%9] != '.' {
+		return Aux(board, index+1)
 	}
-	if (*board)[i][j] != '.' {
-		return Solve(i, j+1, board)
-	}
-	for ch := byte('1'); ch <= '9'; ch++ {
-		if ValidBoard(i, j, ch, board) {
-			(*board)[i][j] = ch
-			if Solve(i, j+1, board) {
+	for i := 1; i <= 9; i++ {
+		if ch := byte(i) + '0'; isValid(board, index/9, index%9, ch) {
+			if board[index/9][index%9] = ch; Aux(board, index+1) {
 				return true
 			}
+			board[index/9][index%9] = '.'
 		}
-		(*board)[i][j] = '.'
 	}
 	return false
 }
 
 func solveSudoku(board [][]byte) {
-	Solve(0, 0, &board)
+	Aux(board, 0)
 }
 
 func main() {}
