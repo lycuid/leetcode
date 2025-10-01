@@ -1,12 +1,10 @@
 // https://leetcode.com/problems/water-bottles/
 package main
 
-func numWaterBottles(numBottles int, numExchange int) int {
-	count := numBottles
-	for numBottles >= numExchange {
-		exchanged := numBottles / numExchange
-		count += exchanged
-		numBottles = numBottles%numExchange + exchanged
+func numWaterBottles(numBottles int, numExchange int) (count int) {
+	for empty := 0; numBottles > 0; {
+		count += numBottles
+		numBottles, empty = (numBottles+empty)/numExchange, (numBottles+empty)%numExchange
 	}
 	return count
 }
