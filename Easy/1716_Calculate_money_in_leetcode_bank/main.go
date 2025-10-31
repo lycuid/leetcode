@@ -2,12 +2,10 @@
 package main
 
 func totalMoney(n int) (count int) {
-	e := n / 7
-	for l, r := 0, 7; l < e; l, r = l+1, r+1 {
-		count += (r - l) * (r + l + 1) / 2
+	for n--; n >= 0; n-- {
+		count += n/7 + n%7 + 1
 	}
-	l, r := e, n%7+e
-	return count + (r-l)*(r+l+1)/2
+	return count
 }
 
 func main() {}
