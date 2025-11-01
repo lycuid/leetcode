@@ -6,21 +6,25 @@ type ListNode struct {
 	Next *ListNode
 }
 
-func Aux(node *ListNode, cache map[int]bool) *ListNode {
-	if node != nil {
-		if node.Next = Aux(node.Next, cache); cache[node.Val] {
-			return node.Next
-		}
-	}
-	return node
-}
-
 func modifiedList(nums []int, head *ListNode) *ListNode {
-	cache := make(map[int]bool)
+	var (
+		cache  = make(map[int]bool)
+		remove func(*ListNode) *ListNode
+	)
+
 	for _, num := range nums {
 		cache[num] = true
 	}
-	return Aux(head, cache)
+	remove = func(head *ListNode) *ListNode {
+		if head != nil {
+			if head.Next = remove(head.Next); cache[head.Val] {
+				return head.Next
+			}
+		}
+		return head
+	}
+
+	return remove(head)
 }
 
 func main() {}
