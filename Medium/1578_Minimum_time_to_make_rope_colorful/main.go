@@ -2,10 +2,10 @@
 package main
 
 func minCost(colors string, neededTime []int) (cost int) {
-	for i, j := 0, 1; j < len(colors); i, j = i+1, j+1 {
-		if colors[i] == colors[j] {
-			if neededTime[i] > neededTime[j] {
-				neededTime[i], neededTime[j] = neededTime[j], neededTime[i]
+	for i := 0; i < len(colors)-1; i++ {
+		if colors[i] == colors[i+1] {
+			if neededTime[i] > neededTime[i+1] {
+				neededTime[i], neededTime[i+1] = neededTime[i+1], neededTime[i]
 			}
 			cost += neededTime[i]
 		}
