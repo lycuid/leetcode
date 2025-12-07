@@ -1,6 +1,8 @@
 // https://leetcode.com/problems/count-odd-numbers-in-an-interval-range/
 package main
 
-func countOdds(l int, h int) int { return (h-l+1)>>1 + (l%2)*(h%2) }
+func countOdds(low int, high int) int {
+	return (low & 1) + ((high - low - high&1) >> 1) + (high & 1)
+}
 
 func main() {}
