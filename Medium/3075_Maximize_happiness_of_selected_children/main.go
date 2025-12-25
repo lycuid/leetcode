@@ -8,9 +8,7 @@ func maximumHappinessSum(happiness []int, k int) (count int64) {
 		return happiness[i] > happiness[j]
 	})
 	for i, num := range happiness[:k] {
-		if n := int64(num - i); n > 0 {
-			count += n
-		}
+		count += int64(max(0, num-i))
 	}
 	return count
 }
