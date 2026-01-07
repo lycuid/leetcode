@@ -7,33 +7,27 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-func Max(i, j int) int {
-	if i > j {
-		return i
+func Accumulate(root *TreeNode) int {
+	if root != nil {
+		root.Val += Accumulate(root.Left) + Accumulate(root.Right)
+		return root.Val
 	}
-	return j
+	return 0
 }
 
-func Sum(root *TreeNode, sum_at map[*TreeNode]int) int {
+func Solve(root *TreeNode, val int) int {
 	if root != nil {
-		sum_at[root] = root.Val + Sum(root.Left, sum_at) + Sum(root.Right, sum_at)
-	}
-	return sum_at[root]
-}
-
-func Aux(root *TreeNode, sum_at map[*TreeNode]int, sum int) (ret int) {
-	if root != nil {
-		ret = Max(
-			sum_at[root]*(sum-sum_at[root]),
-			Max(Aux(root.Left, sum_at, sum), Aux(root.Right, sum_at, sum)),
+		return max(
+			((val - root.Val) * root.Val),
+			Solve(root.Left, val),
+			Solve(root.Right, val),
 		)
 	}
-	return ret
+	return 0
 }
 
 func maxProduct(root *TreeNode) int {
-	sum_at := make(map[*TreeNode]int)
-	return Aux(root, sum_at, Sum(root, sum_at)) % (1e9 + 7)
+	return Solve(root, Accumulate(root)) % (1e9 + 7)
 }
 
 func main() {}
