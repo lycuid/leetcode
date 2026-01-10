@@ -1,29 +1,24 @@
 // https://leetcode.com/problems/minimum-ascii-delete-sum-for-two-strings/
 package main
 
-func minimumDeleteSum(s1, s2 string) int {
-	n, m, sum := len(s1), len(s2), 0
-	prev, curr := make([]int, n+1), make([]int, n+1)
-	for _, ch := range s1 {
-		sum += int(ch)
-	}
-	for _, ch := range s2 {
-		sum += int(ch)
-	}
-	for i := 1; i <= m; i++ {
-		prev, curr = curr, prev
-		for j := 1; j <= n; j++ {
-			if curr[j] = curr[j-1]; curr[j] < prev[j] {
-				curr[j] = prev[j]
-			}
-			if s1[j-1] == s2[i-1] {
-				if n := int(s1[j-1]) + prev[j-1]; curr[j] < n {
-					curr[j] = n
-				}
+func minimumDeleteSum(s1 string, s2 string) int {
+	curr, prev := make([]int, len(s2)+1), make([]int, len(s2)+1)
+	for i := range s1 {
+		curr, prev = prev, curr
+		for j := range s2 {
+			curr[j+1] = max(curr[j], prev[j+1])
+			if s1[i] == s2[j] {
+				curr[j+1] = max(curr[j+1], int(s1[i])+prev[j])
 			}
 		}
 	}
-	return sum - curr[n]*2
+	sum := func(slice []byte) (total int) {
+		for _, ch := range slice {
+			total += int(ch)
+		}
+		return total
+	}
+	return sum([]byte(s1)) + sum([]byte(s2)) - curr[len(s2)]*2
 }
 
 func main() {}
