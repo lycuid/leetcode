@@ -1,16 +1,15 @@
 // https://leetcode.com/problems/concatenation-of-consecutive-binary-numbers/
 package main
 
-import "math"
-
-func concatenatedBinary(n int) int {
-	ret := 1
-	for i := 2.; i <= float64(n); i++ {
-		ret <<= int(math.Floor(math.Log2(i)) + 1)
-		ret |= int(i)
-		ret %= (1e9 + 7)
+func concatenatedBinary(n int) (val int) {
+	const MOD = 1e9 + 7
+	for i, shift := 1, 0; i <= n; i++ {
+		for 1<<shift <= i {
+			shift++
+		}
+		val = ((val << shift) | i) % MOD
 	}
-	return ret
+	return val
 }
 
 func main() {}
