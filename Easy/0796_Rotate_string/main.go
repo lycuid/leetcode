@@ -2,15 +2,11 @@
 package main
 
 func rotateString(s string, goal string) bool {
-	if n := len(s); n == len(goal) {
-	mainloop:
-		for i := 0; i < n; i++ {
-			for j := range goal {
-				if s[(i+j)%n] != goal[j] {
-					continue mainloop
-				}
+	if n := len(goal); len(s) == n {
+		for s = s + s; len(s) > n; s = s[1:] {
+			if s[:n] == goal {
+				return true
 			}
-			return true
 		}
 	}
 	return false
