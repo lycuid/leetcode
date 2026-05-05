@@ -7,29 +7,18 @@ type ListNode struct {
 }
 
 func rotateRight(head *ListNode, k int) *ListNode {
-	if head == nil {
-		return nil
-	}
-
-	length := 0
-	for h := head; true; h = h.Next {
-		length++
-		if h.Next == nil {
-			h.Next = head
-			break
+	if head != nil {
+		last, l := head, 1
+		for ; last.Next != nil; last = last.Next {
+			l++
 		}
+		last.Next = head
+		for k = l - k%l; k > 0; k-- {
+			last = last.Next
+		}
+		head, last.Next = last.Next, nil
 	}
-	k %= length
-
-	newhead := head
-	for l := 0; l < length-k-1; l++ {
-		newhead = newhead.Next
-	}
-	tmp := newhead
-	newhead = newhead.Next
-	tmp.Next = nil
-
-	return newhead
+	return head
 }
 
 func main() {}
