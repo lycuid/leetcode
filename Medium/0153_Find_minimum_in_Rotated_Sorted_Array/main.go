@@ -1,24 +1,15 @@
 // https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/
 package main
 
-func min(x, y int) int {
-	if x < y {
-		return x
-	}
-	return y
-}
-
-func findMin(xs []int) int {
-	left, right := 0, len(xs)-1
-	for (right - left) > 1 {
-		if xs[left] > xs[right] {
-			left += (right - left) / 2
+func findMin(nums []int) (l int) {
+	for r := len(nums) - 1; l < r; {
+		if mid := l + (r-l)>>1; nums[mid] <= nums[r] {
+			r = mid
 		} else {
-			right = left
-			left /= 2
+			l = mid + 1
 		}
 	}
-	return min(xs[left], xs[right])
+	return nums[l]
 }
 
 func main() {}
