@@ -7,28 +7,29 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-func createBinaryTree(descriptions [][]int) (root *TreeNode) {
-	cache := make(map[int]*TreeNode)
-	adj := make(map[*TreeNode]*TreeNode)
-	for _, d := range descriptions {
-		pVal, cVal, isLeft := d[0], d[1], d[2] == 1
-		if _, found := cache[pVal]; !found {
-			cache[pVal] = &TreeNode{Val: pVal}
+func createBinaryTree(descriptions [][]int) (head *TreeNode) {
+	nodes := make(map[int]*TreeNode)
+	parentOf := make(map[int]*TreeNode)
+	for _, desc := range descriptions {
+		parent, child, isLeft := desc[0], desc[1], desc[2] == 1
+		if _, found := nodes[parent]; !found {
+			nodes[parent] = &TreeNode{Val: parent}
 		}
-		if _, found := cache[cVal]; !found {
-			cache[cVal] = &TreeNode{Val: cVal}
+		if _, found := nodes[child]; !found {
+			nodes[child] = &TreeNode{Val: child}
 		}
+		head = nodes[child]
 		if isLeft {
-			cache[pVal].Left = cache[cVal]
+			nodes[parent].Left = nodes[child]
 		} else {
-			cache[pVal].Right = cache[cVal]
+			nodes[parent].Right = nodes[child]
 		}
-		adj[cache[cVal]], root = cache[pVal], cache[cVal]
+		parentOf[child] = nodes[parent]
 	}
-	for adj[root] != nil {
-		root = adj[root]
+	for parentOf[head.Val] != nil {
+		head = parentOf[head.Val]
 	}
-	return root
+	return head
 }
 
 func main() {}
