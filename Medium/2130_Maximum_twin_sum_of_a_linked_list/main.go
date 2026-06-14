@@ -6,26 +6,17 @@ type ListNode struct {
 	Next *ListNode
 }
 
-func pairSum(head *ListNode) (ret int) {
-	var (
-		fst *ListNode = head
-		snd *ListNode = nil
-		aux *ListNode = head
-	)
-	for step := false; head.Next != nil; head = head.Next {
-		if step = !step; step {
-			snd, aux = aux, aux.Next
-		}
+func solve(head, rhead *ListNode) (*ListNode, int) {
+	if rhead == nil {
+		return head, 0
 	}
-	for snd, aux, aux.Next = aux, aux.Next, nil; aux != nil; {
-		aux.Next, snd, aux = snd, aux, aux.Next
-	}
-	for ; snd != nil; fst, snd = fst.Next, snd.Next {
-		if value := fst.Val + snd.Val; value > ret {
-			ret = value
-		}
-	}
-	return ret
+	node, val := solve(head, rhead.Next)
+	return node.Next, max(val, node.Val+rhead.Val)
+}
+
+func pairSum(head *ListNode) int {
+	_, val := solve(head, head)
+	return val
 }
 
 func main() {}
