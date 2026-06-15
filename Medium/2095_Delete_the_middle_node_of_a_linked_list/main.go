@@ -7,12 +7,15 @@ type ListNode struct {
 }
 
 func deleteMiddle(head *ListNode) *ListNode {
-	if head.Next == nil {
-		return nil
+	var (
+		prev *ListNode
+		slow = head
+	)
+	for fast := head; fast != nil && fast.Next != nil; fast = fast.Next.Next {
+		prev, slow = slow, slow.Next
 	}
-	prev, slow, fast := (*ListNode)(nil), head, head
-	for fast != nil && fast.Next != nil {
-		prev, slow, fast = slow, slow.Next, fast.Next.Next
+	if prev == nil {
+		return nil
 	}
 	prev.Next = slow.Next
 	return head
