@@ -1,16 +1,20 @@
 // https://leetcode.com/problems/maximum-ice-cream-bars/
 package main
 
-import "sort"
-
-func maxIceCream(costs []int, coins int) (i int) {
-	sort.Ints(costs)
-	for i, costs = 1, append([]int{0}, costs...); i < len(costs); i++ {
-		if costs[i] += costs[i-1]; costs[i] > coins {
-			break
-		}
+func maxIceCream(costs []int, coins int) (res int) {
+	var maxc int
+	for _, cost := range costs {
+		maxc = max(maxc, cost)
 	}
-	return i - 1
+	count := make([]int, maxc+1)
+	for _, cost := range costs {
+		count[cost]++
+	}
+	for i := 1; i < len(count) && coins/i > 0; i++ {
+		n := min(coins/i, count[i])
+		coins, res = coins-n*i, res+n
+	}
+	return res
 }
 
 func main() {}
