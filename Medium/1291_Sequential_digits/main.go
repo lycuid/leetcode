@@ -1,34 +1,38 @@
 // https://leetcode.com/problems/sequential-digits/
 package main
 
-func from_digits(digits, start int) (n int, err bool) {
-	if 9-start+1 < digits {
-		return n, true
+func solver(high int) func(int) int {
+	digits := func(n int) (res int) {
+		for ; n > 0; n /= 10 {
+			res++
+		}
+		return res
 	}
-	for i := start; digits > 0; i, digits = i+1, digits-1 {
-		n = n*10 + i
-	}
-	return n, false
-}
-
-func digits(n int) (count int) {
-	for ; n > 0; count++ {
-		n /= 10
-	}
-	return count
-}
-
-func sequentialDigits(low int, high int) (ret []int) {
-	for ld, hd := digits(low), digits(high); ld <= hd; ld++ {
-		for i := 1; i <= 9; i++ {
-			if n, err := from_digits(ld, i); err || n > high {
-				break
-			} else if n >= low {
-				ret = append(ret, n)
+	return func(low int) int {
+		for l, r := digits(low), digits(high); l <= r; l++ {
+			for i := 1; i <= 10-l; i++ {
+				var res int
+				for j := 0; j < l; j++ {
+					res = res*10 + i + j
+				}
+				if res > high {
+					return 0
+				}
+				if res >= low {
+					return res
+				}
 			}
 		}
+		return 0
 	}
-	return ret
+}
+
+func sequentialDigits(low int, high int) (res []int) {
+	next := solver(high)
+	for num := next(low); num != 0; num = next(num + 1) {
+		res = append(res, num)
+	}
+	return res
 }
 
 func main() {}
