@@ -3,29 +3,23 @@ package main
 
 func shiftGrid(grid [][]int, k int) [][]int {
 	m, n := len(grid), len(grid[0])
-	l := m * n
-	k = l - (k % l)
-	xy := func(i int) (int, int) {
-		return i / n, i % n
+	mxn := m * n
+	if k = mxn - (k % mxn); k > 0 {
+		swap := func(i, j int) {
+			xi, yi := i/n, i%n
+			xj, yj := j/n, j%n
+			grid[xi][yi], grid[xj][yj] = grid[xj][yj], grid[xi][yi]
+		}
+		for i := 0; i < k/2; i++ {
+			swap(i, k-1-i)
+		}
+		for i := 0; i < (mxn-k)/2; i++ {
+			swap(k+i, mxn-1-i)
+		}
+		for i := 0; i < mxn/2; i++ {
+			swap(i, mxn-1-i)
+		}
 	}
-	swap := func(i, j int) {
-		xi, yi := xy(i)
-		xj, yj := xy(j)
-		grid[xi][yi], grid[xj][yj] = grid[xj][yj], grid[xi][yi]
-	}
-	if k%l == 0 {
-		goto EXIT
-	}
-	for i := 0; i < k/2; i++ {
-		swap(i, k-i-1)
-	}
-	for i := 0; i < (l-k)/2; i++ {
-		swap(i+k, l-i-1)
-	}
-	for i := 0; i < l/2; i++ {
-		swap(i, l-i-1)
-	}
-EXIT:
 	return grid
 }
 
