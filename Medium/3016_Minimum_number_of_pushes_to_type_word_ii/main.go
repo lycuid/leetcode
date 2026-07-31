@@ -3,18 +3,18 @@ package main
 
 import "sort"
 
-func minimumPushes(word string) (ret int) {
+func minimumPushes(word string) (res int) {
 	var cache [26]int
-	for i := range word {
-		cache[word[i]-'a']++
+	for _, ch := range word {
+		cache[ch-'a']++
 	}
-	sort.Slice(cache[:], func(i, j int) bool { return cache[i] > cache[j] })
-	for i, j := 1, 0; i*8 < len(cache)+8; i++ {
-		for ; j < i*8 && j < len(cache); j++ {
-			ret += cache[j] * i
-		}
+	sort.Slice(cache[:], func(i, j int) bool {
+		return cache[i] > cache[j]
+	})
+	for i := range cache {
+		res += cache[i] * (i/8 + 1)
 	}
-	return ret
+	return res
 }
 
 func main() {}
