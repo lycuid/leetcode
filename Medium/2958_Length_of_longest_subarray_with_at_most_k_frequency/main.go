@@ -1,17 +1,15 @@
 // https://leetcode.com/problems/length-of-longest-subarray-with-at-most-k-frequency/
 package main
 
-func maxSubarrayLength(nums []int, k int) (count int) {
+func maxSubarrayLength(nums []int, k int) (res int) {
 	cache := make(map[int]int)
-	for i, j := 0, 0; j < len(nums); j++ {
-		for cache[nums[j]]++; cache[nums[j]] > k; i++ {
-			cache[nums[i]]--
+	for i, j := 0, 0; i < len(nums); i++ {
+		for cache[nums[i]]++; cache[nums[i]] > k; j++ {
+			cache[nums[j]]--
 		}
-		if n := j - i + 1; n > count {
-			count = n
-		}
+		res = max(res, i-j+1)
 	}
-	return count
+	return res
 }
 
 func main() {}
