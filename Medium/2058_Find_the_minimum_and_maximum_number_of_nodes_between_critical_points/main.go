@@ -1,39 +1,39 @@
 // https://leetcode.com/problems/find-the-minimum-and-maximum-number-of-nodes-between-critical-points/
 package main
 
-import "math"
-
 type ListNode struct {
 	Val  int
 	Next *ListNode
 }
 
 func nodesBetweenCriticalPoints(head *ListNode) []int {
-	ret := []int{math.MaxInt, 0}
+	res := []int{-1, -1}
 	if head != nil {
-		node, prev, f_index, index := head.Next, head, -1, -1
-		for i := 1; node != nil; node, prev, i = node.Next, node, i+1 {
-			if next := node.Next; next != nil {
-				if (node.Val > prev.Val && node.Val > next.Val) ||
-					(node.Val < prev.Val && node.Val < next.Val) {
-					if index != -1 {
-						ret[0] = min(ret[0], i-index)
+		var fstId, prevId, currId int
+		prev, curr := head, head.Next
+		for id := 1; curr != nil; prev, curr, id = curr, curr.Next, id+1 {
+			if next := curr.Next; next != nil && ((prev.Val < curr.Val && next.Val < curr.Val) || (prev.Val > curr.Val && next.Val > curr.Val)) {
+				if fstId == 0 {
+					fstId = id
+				}
+				if currId != 0 {
+					prevId = currId
+				}
+				currId = id
+				if prevId != 0 {
+					if res[0] == -1 {
+						res[0] = currId - prevId
 					} else {
-						f_index = i
+						res[0] = min(res[0], currId-prevId)
 					}
-					index = i
 				}
 			}
 		}
-		ret[1] = index - f_index
+		if fstId != currId {
+			res[1] = currId - fstId
+		}
 	}
-	if ret[0] == math.MaxInt {
-		ret[0] = -1
-	}
-	if ret[1] == 0 {
-		ret[1] = -1
-	}
-	return ret
+	return res
 }
 
 func main() {}
