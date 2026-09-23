@@ -2,23 +2,30 @@
 package main
 
 func minOperations(nums []int, x int) int {
-	sum := 0
+	var (
+		n     = len(nums)
+		res   = n + 1
+		cache = make([]int, n+1)
+	)
 	for i := range nums {
-		sum += nums[i]
+		cache[i+1] = cache[i] + nums[i]
 	}
-	sub, max, target := 0, -1, sum-x
-	for i, j := 0, 0; j < len(nums); {
-		for sub, j = sub+nums[j], j+1; i < j && sub > target; i++ {
-			sub -= nums[i]
-		}
-		if n := j - i; n > max && sub == target {
-			max = n
+	if diff := cache[n] - x; diff == 0 {
+		return n
+	} else if diff > 0 {
+		for i, j := 0, 0; i < n; i++ {
+			for j <= i && cache[i+1]-cache[j] > diff {
+				j++
+			}
+			if cache[i+1]-cache[j] == diff {
+				res = min(res, n-(i-j+1))
+			}
 		}
 	}
-	if max == -1 {
+	if res > n {
 		return -1
 	}
-	return len(nums) - max
+	return res
 }
 
 func main() {}
