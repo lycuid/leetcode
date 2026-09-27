@@ -1,36 +1,33 @@
 // https://leetcode.com/problems/reverse-substrings-between-each-pair-of-parentheses/
 package main
 
-func Reverse(chars []byte) []byte {
-	for i, j := 0, len(chars)-1; i < j; i, j = i+1, j-1 {
-		chars[i], chars[j] = chars[j], chars[i]
-	}
-	return chars
-}
+func reverseParentheses(s string) string {
+	var (
+		res    = make([]byte, 0, len(s))
+		portal = make([]int, len(s))
+		stack  = make([]int, 0, len(s))
+	)
 
-func Aux(chars []byte) []byte {
-	for i := 0; i < len(chars); i++ {
-		if chars[i] == '(' {
-			j := i + 1
-			for depth := 1; j < len(chars); j++ {
-				switch chars[j] {
-				case '(':
-					depth++
-				case ')':
-					depth--
-				}
-				if depth == 0 {
-					break
-				}
-			}
-			return append(chars[:i], append(Reverse(Aux(chars[i+1:j])), Aux(chars[j+1:])...)...)
+	for i, ch := range s {
+		switch ch {
+		case '(':
+			stack = append(stack, i)
+		case ')':
+			n := len(stack)
+			portal[stack[n-1]], portal[i] = i, stack[n-1]
+			stack = stack[:n-1]
 		}
 	}
-	return chars
-}
 
-func reverseParentheses(s string) string {
-	return string(Aux([]byte(s)))
+	for i, inc := 0, 1; i < len(s); i += inc {
+		switch ch := s[i]; ch {
+		case '(', ')':
+			i, inc = portal[i], -inc
+		default:
+			res = append(res, s[i])
+		}
+	}
+	return string(res)
 }
 
 func main() {}
