@@ -1,20 +1,18 @@
 // https://leetcode.com/problems/maximum-nesting-depth-of-the-parentheses/
 package main
 
-func maxDepth(s string) (count int) {
-	for i, max := 0, 0; i < len(s); i++ {
-		switch s[i] {
+func maxDepth(s string) (res int) {
+	var depth int
+	for _, ch := range s {
+		switch ch {
 		case '(':
-			if max++; max > count {
-				count = max
-			}
-			break
+			depth++
+			res = max(res, depth)
 		case ')':
-			max--
-			break
+			depth--
 		}
 	}
-	return count
+	return res
 }
 
 func main() {}
