@@ -2,35 +2,33 @@
 package main
 
 func checkValidString(s string) bool {
-	var left, misc []int
+	open, misc := make([]int, 0, len(s)), make([]int, 0, len(s))
 	for i, ch := range s {
 		switch ch {
 		case '(':
-			left = append(left, i)
-			break
+			open = append(open, i)
+		case '*':
+			misc = append(misc, i)
 		case ')':
-			if n := len(left); n > 0 {
-				left = left[:n-1]
+			if n := len(open); n > 0 {
+				open = open[:n-1]
 			} else if m := len(misc); m > 0 {
 				misc = misc[:m-1]
 			} else {
 				return false
 			}
-			break
-		default:
-			misc = append(misc, i)
-			break
 		}
 	}
-	for len(left) > 0 && len(misc) > 0 {
-		for len(misc) > 0 && misc[0] <= left[0] {
+	for ; len(open) > 0; open = open[1:] {
+		for len(misc) > 0 && misc[0] < open[0] {
 			misc = misc[1:]
 		}
-		if len(misc) > 0 {
-			left, misc = left[1:], misc[1:]
+		if len(misc) == 0 {
+			break
 		}
+		misc = misc[1:]
 	}
-	return len(left) == 0
+	return len(open) == 0
 }
 
 func main() {}
